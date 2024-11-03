@@ -1,4 +1,4 @@
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
 import { IsBase64Image } from '@app/core/decorators/base64-image.decorator'
 import { IsArray, IsBoolean, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator'
 export class CreateUserDto {

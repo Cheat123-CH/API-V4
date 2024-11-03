@@ -1,10 +1,14 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 
-// ================================================================>> Third Party Library
-import { Op } from "sequelize";
+// ===========================================================================>> Third Party Library
+import { literal, Op } from "sequelize";
 
-// ================================================================>> Custom Library
+// ===========================================================================>> Custom Library
+import OrderDetails from "@models/order/detail.model";
+import Order from "@models/order/order.model";
+import Product from "@models/product/product.model";
+import ProductsType from "@models/product/type.model";
 import Role from "@models/user/role.model";
 import UserRoles from "@models/user/user_roles.model";
 import User from "@models/user/users.model";
@@ -17,17 +21,21 @@ export class UserService {
 
     constructor(private readonly fileService: FileService) { };
 
-
     async setup(): Promise<{ roles: { id: number; name: string }[] }> {
         const roles = await Role.findAll({
             attributes: ['id', 'name'],
         });
-
         return { roles: roles };
     }
 
-    async listing(userId: number, page_size: number = 10, page: number = 1, key?: string): Promise<List> {
+    async listing(
+        userId: number,
+        page_size: number = 10,
+        page: number = 1,
+        key?: string
+    ): Promise<List> {
         const offset = (page - 1) * page_size;
+
         const where = {
             [Op.and]: [
                 key
@@ -41,8 +49,32 @@ export class UserService {
                 { id: { [Op.not]: userId } },
             ],
         };
+
         const data = await User.findAll({
-            attributes: ['id', 'name', 'avatar', 'phone', 'email', 'is_active', 'created_at'],
+            attributes: [
+                'id', 'name', 'avatar', 'phone', 'email',
+                'is_active', 'last_login', 'created_at',
+                [
+                    literal(`
+                        (
+                            SELECT COUNT(o.id)
+                            FROM "order" AS o
+                            WHERE o.cashier_id = "User".id
+                        )
+                    `),
+                    'totalOrders',
+                ],
+                [
+                    literal(`
+                        (
+                            SELECT COALESCE(SUM(o.total_price), 0)
+                            FROM "order" AS o
+                            WHERE o.cashier_id = "User".id
+                        )
+                    `),
+                    'totalSales',
+                ],
+            ],
             include: [
                 {
                     model: UserRoles,
@@ -51,33 +83,63 @@ export class UserService {
                         {
                             model: Role,
                             attributes: ['id', 'name'],
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
+                {
+                    model: Order,
+                    attributes: [],
+                },
             ],
+            where,
             order: [['id', 'DESC']],
-            where: where,
             limit: page_size,
             offset,
+            // raw: true,
         });
-        const totalCount = await User.count();
+
+        const totalCount = await User.count({ where });
         const totalPages = Math.ceil(totalCount / page_size);
 
         const dataFormat: List = {
-            data: data,
+            data,
             pagination: {
                 currentPage: page,
                 perPage: page_size,
-                totalPages: totalPages,
+                totalPages,
                 totalItems: totalCount,
             },
         };
 
         return dataFormat;
     }
+
     async view(userId: number) {
         const data = await User.findByPk(userId, {
-            attributes: ['id', 'name', 'avatar', 'phone', 'email', 'is_active', 'created_at'],
+            attributes: [
+                'id', 'name', 'avatar', 'phone', 'email',
+                'is_active', 'last_login', 'created_at',
+                [
+                    literal(`
+                        (
+                            SELECT COUNT(o.id)
+                            FROM "order" AS o
+                            WHERE o.cashier_id = "User".id
+                        )
+                    `),
+                    'totalOrders',
+                ],
+                [
+                    literal(`
+                        (
+                            SELECT COALESCE(SUM(o.total_price), 0)
+                            FROM "order" AS o
+                            WHERE o.cashier_id = "User".id
+                        )
+                    `),
+                    'totalSales',
+                ],
+            ],
             include: [
                 {
                     model: UserRoles,
@@ -86,17 +148,47 @@ export class UserService {
                         {
                             model: Role,
                             attributes: ['id', 'name'],
-                        }
-                    ]
-                }
+                        },
+                    ],
+                },
+                {
+                    model: Order,
+                    attributes: [],
+                },
             ],
         });
-        return { data: data };
+
+        const where: any = {
+            cashier_id: userId,
+        };
+
+        const sale = await Order.findAll({
+            attributes: ['id', 'receipt_number', 'total_price', 'platform', 'ordered_at'],
+            include: [
+                {
+                    model: OrderDetails,
+                    attributes: ['id', 'unit_price', 'qty'],
+                    include: [
+                        {
+                            model: Product,
+                            attributes: ['id', 'name', 'code', 'image'],
+                            include: [{ model: ProductsType, attributes: ['name'] }],
+                        },
+                    ],
+                },
+                { model: User, attributes: ['id', 'avatar', 'name'] },
+            ],
+            where: where,
+            order: [['ordered_at', 'DESC']],
+            limit: 10,
+        });
+        return { data: data, sale: sale };
     }
 
     async create(body: CreateUserDto, userId: number): Promise<Create> {
         let user: User;
         try {
+            
             // Check if a user with the same phone or email already exists
             user = await User.findOne({
                 where: {
@@ -123,25 +215,32 @@ export class UserService {
         // Set the avatar to the file URI returned from the file service
         body.avatar = result.file.uri;
 
+        let createdUser;
         // Create the new user in the database
-        const createdUser = await User.create({
-            name: body.name,
-            avatar: body.avatar,
-            phone: body.phone,
-            email: body.email,
-            password: body.password,
-            creator_id: userId
-        });
+        try {
+            createdUser = await User.create({
+                name: body.name,
+                avatar: body.avatar,
+                phone: body.phone,
+                email: body.email,
+                password: body.password,
+                creator_id: userId
+            });
+        } catch (err) {
+            console.error('Error creating user:', err); // Log the error
+            throw new BadRequestException('Failed to create user');
+        }
 
         // Assign roles to the user by creating entries in the UserRoles table
         if (body.role_ids && body.role_ids.length > 0) {
-            const userRoles = body.role_ids.map(roleId => ({
+            const userRoles = body.role_ids.map((roleId, index) => ({
                 user_id: createdUser.id,
                 role_id: roleId,
                 added_id: userId, // The creator who added the roles
                 created_at: new Date(),
-                is_default: false // Assuming roles are not default, adjust if necessary
+                is_default: index === 0 // Set is_default to true only for the first role
             }));
+
             await UserRoles.bulkCreate(userRoles);
         }
 
@@ -151,7 +250,7 @@ export class UserService {
             include: [
                 {
                     model: UserRoles,
-                    attributes: ['id', 'role_id'],
+                    attributes: ['id', 'role_id', 'is_default'], // Including is_default in the response
                     include: [
                         {
                             model: Role,
@@ -175,6 +274,7 @@ export class UserService {
         const base64Pattern = /^data:image\/(jpeg|png|gif|bmp|webp);base64,[a-zA-Z0-9+/]+={0,2}$/;
         return base64Pattern.test(str);
     }
+
     async update(userId: number, body: UpdateUserDto, updaterId: number): Promise<Update> {
         // Find the current user
         let currentUser: User;
@@ -287,8 +387,6 @@ export class UserService {
         };
         return dataFormat;
     }
-
-
 
     async delete(userId: number): Promise<{ message: string }> {
         try {

@@ -1,7 +1,8 @@
-// =========================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 
-// =========================================================================>> Custom Library
+// ===========================================================================>> Custom Library
+import { Platform } from '@app/core/decorators/device-info.decorator';
 import ProductsType from 'src/models/product/type.model';
 import { CreateProductTypeDto, UpdateProductTypeDto } from './type.dto';
 import { ProductsTypeService } from './type.service';
@@ -11,7 +12,7 @@ export class ProductsTypeController {
     constructor(private _service: ProductsTypeService) { };
 
     @Get()
-    async listing(): Promise<{ data: { id: number, name: string, created_at: Date, n_of_products: number }[] }> {
+    async listing(@Platform() platform: string): Promise<{ data: { id: number, name: string, created_at: Date, n_of_products: number }[] }> {
         return await this._service.listing();
     }
 

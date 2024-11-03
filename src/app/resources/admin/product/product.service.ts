@@ -1,10 +1,12 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
-// ================================================================>> Third Party Library
-import { Op } from 'sequelize';
+// ============================================================================>> Third Party Library
+import { literal, Op } from 'sequelize';
 
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
+import OrderDetails from '@models/order/detail.model';
+import User from '@models/user/users.model';
 import { FileService } from 'src/app/services/file.service';
 import Product from 'src/models/product/product.model';
 import ProductsType from 'src/models/product/type.model';
@@ -17,67 +19,136 @@ export class ProductService {
     constructor(private readonly fileService: FileService) { };
 
     // Method to retrieve the setup data for product types
-    async setup(): Promise<{ data: ProductsType[] }> {
-        const setup = await ProductsType.findAll({ attributes: ['id', 'name'] });
+    async setup() {
+        // Fetch product types
+        const productTypes = await ProductsType.findAll({
+            attributes: ['id', 'name'],
+        });
+
+        // Fetch users
+        const users = await User.findAll({
+            attributes: ['id', 'name'],
+        });
         return {
-            data: setup
+            data: {
+                productTypes,
+                users,
+            },
         };
     }
 
-    async listing(page_size: number = 10, page: number = 1, key?: string, type_id?: number) {
-        const offset = (page - 1) * page_size;
-        // Define the WHERE condition based on provided parameters
-        const where = {
-            [Op.and]: [
-                key
-                    ? {
-                        [Op.or]: [
-                            { code: { [Op.iLike]: `%${key}%` } },
-                            { name: { [Op.iLike]: `%${key}%` } },
-                        ],
-                    }
-                    : {},
-                type_id ? { type_id: Number(type_id) } : {}
-            ]
-        };
 
-        // Retrieve products with associated product types
-        const data = await Product.findAll({
-            attributes: ['id', 'code', 'name', 'image', 'unit_price', 'created_at'],
-            where: where,
-            include: [
-                {
-                    model: ProductsType,
-                    attributes: ['id', 'name']
+    async listing(
+        page_size: number = 10,
+        page: number = 1,
+        key?: string,
+        type_id?: number,
+        creator_id?: number,
+        startDate?: string,
+        endDate?: string
+    ) {
+        try {
+            const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
+                const date = new Date(dateString);
+                const utcOffset = 7 * 60; // UTC+7 offset in minutes
+                const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
+
+                if (isEndOfDay) {
+                    localDate.setHours(23, 59, 59, 999); // End of day
+                } else {
+                    localDate.setHours(0, 0, 0, 0); // Start of day
                 }
-            ],
-            order: [['id', 'DESC']],
-            limit: page_size,
-            offset,
-        });
+                return localDate;
+            };
 
-        const totalCount = await Product.count({
-            where: where,
-        });
+            // Calculate start and end dates for the filter
+            const start = startDate ? toCambodiaDate(startDate) : null;
+            const end = endDate ? toCambodiaDate(endDate, true) : null;
+            const offset = (page - 1) * page_size;
 
-        const totalPages = Math.ceil(totalCount / page_size);
+            // Define the WHERE condition based on provided parameters
+            const where: any = {
+                [Op.and]: [
+                    key
+                        ? {
+                            [Op.or]: [
+                                { code: { [Op.iLike]: `%${key}%` } },
+                                { name: { [Op.iLike]: `%${key}%` } },
+                            ],
+                        }
+                        : {},
+                    type_id ? { type_id: Number(type_id) } : {},
+                    creator_id ? { creator_id: Number(creator_id) } : {},
+                    start && end ? { created_at: { [Op.between]: [start, end] } } : {},
+                ],
+            };
 
-        const dataFormat: List = {
-            status: 'success',
-            data: data,
-            pagination: {
-                currentPage: page,
-                perPage: page_size,
-                totalPages: totalPages,
-                totalItems: totalCount,
-            },
-        };
+            // Retrieve products with associated product types and users
+            const data = await Product.findAll({
+                attributes: [
+                    'id',
+                    'code',
+                    'name',
+                    'image',
+                    'unit_price',
+                    'created_at',
+                    [
+                        literal(`(
+                  SELECT COUNT(*) 
+                  FROM order_details AS od 
+                  WHERE od.product_id = "Product"."id"
+                )`),
+                        'total_sale',
+                    ],
+                ],
+                where,
+                include: [
+                    {
+                        model: ProductsType,
+                        attributes: ['id', 'name'],
+                    },
+                    {
+                        model: OrderDetails,
+                        as: 'pod',
+                        attributes: [],
+                    },
+                    {
+                        model: User,
+                        attributes: ['id', 'name', 'avatar'],
+                    },
+                ],
+                order: [['id', 'DESC']],
+                limit: page_size,
+                offset,
+            });
 
-        return dataFormat;
+            // Calculate the total count for pagination
+            const totalCount = await Product.count({ where });
+
+            // Calculate the total pages based on the total count
+            const totalPages = Math.ceil(totalCount / page_size);
+
+            // Format the response data
+            const dataFormat: List = {
+                status: 'success',
+                data,
+                pagination: {
+                    currentPage: page,
+                    perPage: page_size,
+                    totalPages,
+                    totalItems: totalCount,
+                },
+            };
+
+            return dataFormat;
+        } catch (error) {
+            console.error('Error in listing method:', error); // Log the error for debugging
+            throw new Error('Internal server error');
+        }
     }
 
     // Method to create a new product
-    async create(body: CreateProductDto): Promise<{ data: Product, message: string }> {
+    async create(body: CreateProductDto, creator_id: number): Promise<{ data: Product, message: string }> {
         // Check if the product code already exists
         const checkExistCode = await Product.findOne({
             where: { code: body.code }
@@ -102,10 +173,32 @@ export class ProductService {
         body.image = result.file.uri;
 
         // Create the new product
-        const product = await Product.create(body);
-
+        const product = await Product.create({
+            ...body,
+            creator_id,
+        });
+        const data = await Product.findByPk(product.id, {
+            attributes: ['id', 'code', 'name', 'image', 'unit_price', 'created_at',
+                [literal(`(SELECT COUNT(*) FROM order_details AS od WHERE od.product_id = "Product"."id" )`),
+                    'total_sale',]],
+            include: [
+                {
+                    model: ProductsType,
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: OrderDetails,
+                    as: 'pod',
+                    attributes: [],
+                },
+                {
+                    model: User,
+                    attributes: ['id', 'name', 'avatar'],
+                }
+            ],
+        });
         return {
-            data: product,
+            data: data,
             message: 'Product has been created.'
         };
     }
@@ -155,10 +248,29 @@ export class ProductService {
         await Product.update(body, {
             where: { id: id }
         });
-
+        const data = await Product.findByPk(id, {
+            attributes: ['id', 'code', 'name', 'image', 'unit_price', 'created_at',
+                [literal(`(SELECT COUNT(*) FROM order_details AS od WHERE od.product_id = "Product"."id" )`),
+                    'total_sale',]],
+            include: [
+                {
+                    model: ProductsType,
+                    attributes: ['id', 'name']
+                },
+                {
+                    model: OrderDetails,
+                    as: 'pod',
+                    attributes: [],
+                },
+                {
+                    model: User,
+                    attributes: ['id', 'name', 'avatar'],
+                }
+            ],
+        });
         // Retrieve and return the updated product
         return {
-            data: await Product.findByPk(id),
+            data: data,
             message: 'Product has been updated.'
         };
     }

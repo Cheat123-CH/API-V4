@@ -6,7 +6,7 @@ import * as readlineSync from 'readline-sync';
 import sequelizeConfig from '@config/sequelize.config';
 
 class MigrationInitializer {
-    
+
     private sequelize: Sequelize;
 
     constructor() {

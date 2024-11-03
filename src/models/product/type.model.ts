@@ -12,6 +12,7 @@ class ProductsType extends Model<ProductsType> {
 
     // ============================================================================================= Field
     @Column({ allowNull: false, type: DataType.STRING(100) })                                       name: string;
+    @Column({ allowNull: true, type: DataType.STRING(100) })                                        image?: string;
     created_at: Date
     // ===========================================================================================>> One to Many
     @HasMany(() => Product)                                                                         products: Product[];

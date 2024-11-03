@@ -1,12 +1,14 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import User from '@models/user/users.model';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
 import { JwtTokenGenerator, TokenGenerator } from '@app/shared/jwt/token';
 import Role from '@models/user/role.model';
+import UsersLogs from '@models/user/users_logs.model';
 import { FileService } from 'src/app/services/file.service';
 import { UpdatePasswordDto, UpdateUserDto } from './profile.dto';
+import { List } from './profile.types';
 
 @Injectable()
 export class ProfileService {
@@ -104,5 +106,45 @@ export class ProfileService {
 
         //=============================================
         return { message: 'Password has been updated successfully.' };
+    }
+
+    async listingLogs(userId: number, page_size, page) {
+        try {
+            const offset = (page - 1) * page_size;
+            // Build the dynamic `where` clause with filters
+            const where: any = {
+                user_id: userId,
+            };
+
+            const data = await UsersLogs.findAll({
+                attributes: ['id', 'action', 'details', 'ip_address', 'browser', 'os', 'platform', 'timestamp'],
+                where: where,
+                order: [['id', 'DESC']],
+                limit: page_size,
+                offset,
+            });
+
+            const totalCount = await UsersLogs.count({
+                where: where,
+            });
+
+            const totalPages = Math.ceil(totalCount / page_size);
+
+            const dataFormat: List = {
+                status: 'success',
+                data: data,
+                pagination: {
+                    currentPage: page,
+                    perPage: page_size,
+                    totalPages: totalPages,
+                    totalItems: totalCount,
+                },
+            };
+
+            return dataFormat;
+
+        } catch (error) {
+            throw new BadRequestException('Someting went wrong!. Please try again later.', 'Error Query');
+        }
     }
 }

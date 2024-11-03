@@ -1,10 +1,10 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { Global, Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { SequelizeModule } from '@nestjs/sequelize';
-// ================================================================>> Third Party Library
+// ===========================================================================>> Third Party Library
 import * as multer from 'multer';
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
 import sequelizeConfig from './sequelize.config';
 import { HttpModule } from '@nestjs/axios';
 import { FileService } from '@app/services/file.service';

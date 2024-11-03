@@ -1,7 +1,7 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { Routes } from '@nestjs/core';
 
-// ================================================================>> Custom Library
+// ===========================================================================>> Custom Library
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 

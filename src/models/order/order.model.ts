@@ -2,6 +2,7 @@
 import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 
 // ================================================================================================= Custom Library
+import Notifications from '@models/notification/notification.model';
 import User from '@models/user/users.model';
 import OrderDetails from './detail.model';
 
@@ -18,12 +19,14 @@ class Order extends Model<Order> {
     @Column({ allowNull: false, unique: true, type: DataType.BIGINT })                              receipt_number: number;
     @Column({ allowNull: true, type: DataType.DOUBLE })                                             total_price?: number;
     @Column({ allowNull: true, type: DataType.DATE, defaultValue: new Date() })                     ordered_at?: Date;
-    
+    @Column({ allowNull: true, type: DataType.STRING(20), defaultValue: 'Web'})                     platform: string;
+    created_at: Date
     // ============================================================================================= Many to One
     @BelongsTo(() => User)                                                                          cashier: User;
 
     // ============================================================================================= One to Many
     @HasMany(() => OrderDetails)                                                                    details: OrderDetails[]
+    @HasMany(() => Notifications)                                                                   notifications: Notifications[];
 }
 
 export default Order;

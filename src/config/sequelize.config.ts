@@ -1,7 +1,7 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { SequelizeModuleOptions } from '@nestjs/sequelize';
 
-// ================================================================>> Third Party Library
+// ===========================================================================>> Third Party Library
 import * as dotenv from 'dotenv';
 import { Dialect } from 'sequelize';
 
@@ -15,7 +15,7 @@ const sequelizeConfig: SequelizeModuleOptions = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
-    timezone: process.env.DB_TIMEZONE || 'Asia/Phnom_Penh',
+    //timezone: process.env.DB_TIMEZONE || 'Asia/Phnom_Penh',
     models: [__dirname + '/../models/**/*.model.{ts,js}'],
     logging: false
 };

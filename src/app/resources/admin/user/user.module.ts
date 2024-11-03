@@ -1,7 +1,7 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { Module } from '@nestjs/common';
 
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
 import { FileService } from 'src/app/services/file.service';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';

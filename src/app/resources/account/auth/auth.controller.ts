@@ -1,11 +1,11 @@
-// ================================================================>> Core Library
-import { Body, Controller, HttpCode, HttpStatus, Post, UsePipes } from '@nestjs/common';
+// ===========================================================================>> Core Library
+import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req, UsePipes } from '@nestjs/common';
 
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
 import { RoleExistsPipe } from '@app/core/pipes/role.pipe';
 import User from '@models/user/users.model';
-import { LoginRequestDto } from './auth.dto';
+import { LoginRequestDto, LoginRequestOTPDto } from './auth.dto';
 import { AuthService } from './auth.service';
 
 @Controller()
@@ -15,8 +15,30 @@ export class AuthController {
 
     @Post('login')
     @HttpCode(HttpStatus.OK)
-    async login(@Body() data: LoginRequestDto) {
-        return await this.authService.login(data);
+    async login(@Body() data: LoginRequestDto, @Req() req: Request) {
+        return await this.authService.login(data, req);
+    }
+
+    @Post('check-user')
+    async checkExistUser(@Body('username') username: string) {
+        if (!username) {
+            throw new BadRequestException('Email or phone is required');
+        }
+        return await this.authService.checkExistUser(username);
+    }
+
+    @Post('send-otp')
+    async sendOTP(@Body('username') username: string) {
+        if (!username) {
+            throw new BadRequestException('Email or phone is required');
+        }
+        return await this.authService.sendOTP(username);
+    }
+
+    @Post('verify-otp')
+    async verifyOTP(@Body() body: LoginRequestOTPDto, @Req() req: Request
+    ) {
+        return await this.authService.verifyOTP(body, req);
     }
 
     @Post('switch')
@@ -24,4 +46,5 @@ export class AuthController {
     async switch(@UserDecorator() auth: User, @Body() body: { role_id: number }) {
         return await this.authService.switchDefaultRole(auth, Number(body.role_id));
     }
+
 }

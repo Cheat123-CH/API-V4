@@ -1,4 +1,4 @@
-// ================================================================>> Costom Library
+// ===========================================================================>> Costom Library
 import { Pagination } from "@app/shared/pagination.interface";
 import User from "@models/user/users.model";
 export interface List {

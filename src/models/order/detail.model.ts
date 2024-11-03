@@ -18,7 +18,7 @@ class OrderDetails extends Model<OrderDetails> {
 
     @Column({ allowNull: true, type: DataType.DOUBLE })                                             unit_price?: number;
     @Column({ allowNull: false, type: DataType.INTEGER, defaultValue: 0 })                          qty: number;
-
+    created_at: Date
     // ============================================================================================= Many to One
     @BelongsTo(() => Order)                                                                         order: Order;
     @BelongsTo(() => Product)                                                                       product: Product;

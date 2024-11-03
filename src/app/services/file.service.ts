@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { firstValueFrom } from 'rxjs';
+import { Injectable } from '@nestjs/common';
 import * as FormData from 'form-data';
+import { firstValueFrom } from 'rxjs';
 
 // Response type of File V4
 interface File {

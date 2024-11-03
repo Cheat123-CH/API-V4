@@ -1,10 +1,11 @@
-// =========================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
-// =========================================================================>> Third party Library
+// ===========================================================================>> Third party Library
 import { Op, Sequelize } from 'sequelize';
 
-// =========================================================================>> Custom Library
+// ===========================================================================>> Custom Library
+import { FileService } from '@app/services/file.service';
 import Product from 'src/models/product/product.model';
 import ProductsType from 'src/models/product/type.model';
 import { CreateProductTypeDto, UpdateProductTypeDto } from './type.dto';
@@ -12,11 +13,14 @@ import { CreateProductTypeDto, UpdateProductTypeDto } from './type.dto';
 @Injectable()
 export class ProductsTypeService {
 
+    constructor(private readonly fileService: FileService) { };
+
     async listing(): Promise<{ data: { id: number, name: string, created_at: Date, n_of_products: number }[] }> {
         const data = await ProductsType.findAll({
             attributes: [
                 'id',
                 'name',
+                'image',
                 'created_at',
                 [Sequelize.fn('COUNT', Sequelize.col('products.id')), 'n_of_products'] // Fixing the COUNT function
             ],
@@ -34,6 +38,7 @@ export class ProductsTypeService {
         const dataFormat = data.map(type => ({
             id: type.id,
             name: type.name,
+            image: type.image,
             created_at: type.created_at,
             n_of_products: type.get('n_of_products') || 0 // Using `get` method to access the alias field
         }));
@@ -52,8 +57,16 @@ export class ProductsTypeService {
         if (checkExistName) {
             throw new BadRequestException('ឈ្មោះនេះមានក្នុងប្រព័ន្ធ')
         }
+        const result = await this.fileService.uploadBase64Image('product', body.image);
+        if (result.error) {
+            throw new BadRequestException(result.error);
+        }
+        // Replace base64 string by file URI from FileService
+        body.image = result.file.uri;
+
         const productType = await ProductsType.create({
-            name: body.name
+            name: body.name,
+            image: body.image
         });
 
         const dataFormat = {
@@ -69,6 +82,16 @@ export class ProductsTypeService {
         if (!checkExist) {
             throw new BadRequestException('គ្មានទិន្នន័យនៅក្នុងប្រព័ន្ធ')
         }
+        if (body.image) {
+            const result = await this.fileService.uploadBase64Image('product', body.image);
+            if (result.error) {
+                throw new BadRequestException(result.error);
+            }
+            // Replace base64 string by file URI from FileService
+            body.image = result.file.uri;
+        } else {
+            body.image = undefined;
+        }
         const checkExistName = await ProductsType.findOne({
             where: {
                 id: { [Op.not]: id },
@@ -83,10 +106,9 @@ export class ProductsTypeService {
         });
 
         const dataFormat = {
-            data: await ProductsType.findByPk(id, { attributes: ['id', 'name', 'updated_at'] }),
+            data: await ProductsType.findByPk(id, { attributes: ['id', 'name', 'image', 'updated_at'] }),
             message: 'Product type has been created.'
         } as { data: ProductsType, message: string };
-
         return dataFormat;
     }
 

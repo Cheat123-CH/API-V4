@@ -1,4 +1,4 @@
-// =========================================================================>> Custom Library
+// ===========================================================================>> Custom Library
 import { IsBase64Image } from '@app/core/decorators/base64-image.decorator'
 import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator'
 

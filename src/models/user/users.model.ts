@@ -2,10 +2,13 @@
 import { BelongsTo, BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 
 // ================================================================================================= Custom Library
+import Order from '@models/order/order.model';
+import Product from '@models/product/product.model';
 import UserRoles from '@models/user/user_roles.model';
 import * as bcrypt from 'bcryptjs';
 import { ActiveEnum } from 'src/app/enums/active.enum';
 import Role from './role.model';
+import UserOTP from './user_otps.model';
 @Table({ tableName: 'users', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true })
 class User extends Model<User> {
 
@@ -15,8 +18,8 @@ class User extends Model<User> {
     // ============================================================================================= Field
     @Column({ allowNull: true, type: DataType.STRING(200), defaultValue: 'static/avatar.png' })     avatar: string;
     @Column({ allowNull: false, type: DataType.STRING(50) })                                        name: string;
-    @Column({ allowNull: true, unique: true, type: DataType.STRING(100) })                          email: string;
-    @Column({ allowNull: false, unique: true, type: DataType.STRING(100) })                         phone: string;
+    @Column({ allowNull: true, type: DataType.STRING(100) })                                        email: string;
+    @Column({ allowNull: false,type: DataType.STRING(100) })                                        phone: string;
     @Column({ allowNull: false, type: DataType.STRING(100), set(value: string) 
         {const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(value, salt);
@@ -30,10 +33,13 @@ class User extends Model<User> {
     // ===========================================================================================>> Many to One
     @BelongsTo(() => User, { foreignKey: 'creator_id', as: 'creator' })                             creator: User;
     @BelongsTo(() => User, { foreignKey: 'updater_id', as: 'updater' })                             updater: User;
+    @Column({ allowNull: true, type: DataType.DATE, defaultValue: new Date() })                     last_login?: Date;
     created_at: Date
     // ===========================================================================================>> One to Many
     @HasMany(() => UserRoles)                                                                       role: UserRoles[];
-
+    @HasMany(() => Order)                                                                           orders: Order[];
+    @HasMany(() => Product)                                                                         create_pos: Product[];
+    @HasMany(() => UserOTP)                                                                         otps: UserOTP[];
     // ===========================================================================================>> Many to Many
     @BelongsToMany(() => Role, () => UserRoles)                                                     roles: Role[];
 }

@@ -33,6 +33,29 @@ export class TelegramService {
         }
     }
 
+    async sendDocument(fileBuffer: Buffer, fileName: string, caption?: string) {
+        try {
+            const documentOptions: TelegramBot.SendDocumentOptions = {
+                caption: caption || null,
+            };
+
+            await this.bot.sendDocument(
+                '-1002334502755',
+                fileBuffer, // Pass the buffer directly
+                documentOptions,
+                { filename: fileName } // Use this parameter for filename
+            );
+
+            this.logger.log('Document sent successfully.');
+        } catch (error) {
+            this.handleSendDocumentError(error);
+        }
+    }
+
+    private handleSendDocumentError(error: Error | any) {
+        this.logger.error(`Error sending document to Telegram: ${error.message}`);
+    }
+
     private handleSendMessageError(error: Error | any) {
         this.logger.error(`Error sending message to Telegram: ${error.message}`);
     }

@@ -1,11 +1,12 @@
-// ================================================================>> Core Library
+// ===========================================================================>> Core Library
 import { Routes } from '@nestjs/core';
+
+// ===========================================================================>> Custom Library
 import { DashboardModule } from './dashbord/dashboard.module';
 import { ProductModule } from './product/product.module';
 import { ProductsTypeModule } from './product/type/type.module';
 import { SaleModule } from './sale/sale.module';
 import { UserModule } from './user/user.module';
-// ================================================================>> Custom Library
 
 
 export const adminRoutes: Routes = [

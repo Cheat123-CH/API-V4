@@ -1,16 +1,14 @@
-// =========================================================================>> Core Library
-import { UserMiddleware } from '@app/core/middlewares/user.middleware';
+// ===========================================================================>> Core Library
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { DashboardModule } from './dashbord/dashboard.module';
+
+// ===========================================================================>> Custom Library
+import { UserMiddleware } from '@app/core/middlewares/user.middleware';
 import { OrderModule } from './order/order.module';
 import { SaleModule } from './sale/sale.module';
+import { DeviceTrackerMiddleware } from '@app/core/middlewares/device-tracker.middleware';
 
-// =========================================================================>> Custom Library
-
-// ======================================= >> Code Starts Here << ========================== //
 @Module({
     imports: [
-        DashboardModule,
         SaleModule,
         OrderModule
     ]
@@ -19,7 +17,7 @@ import { SaleModule } from './sale/sale.module';
 export class CashierModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
-            .apply(UserMiddleware)
+            .apply(UserMiddleware, DeviceTrackerMiddleware)
             .forRoutes({ path: 'api/cashier/*', method: RequestMethod.ALL });
     }
 }

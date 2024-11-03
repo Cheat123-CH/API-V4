@@ -24,4 +24,5 @@ export class OrderController {
     async makeOrder(@Body() body: CreateOrderDto, @UserDecorator() user: User): Promise<{ data: Order, message: string }> {
         return await this._service.makeOrder(user.id, body);
     }
+    
 }
