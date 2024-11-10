@@ -106,7 +106,7 @@
             # FILE_USERNAME: "{{ FILE_USERNAME }}"
             # FILE_KEY: "{{ FILE_KEY }}"
             # FILE_PASSWORD: "{{ FILE_PASSWORD }}"
-            FILE_SERVICE_URL: "{{ FILE_SERVICE_URL }}"
+            FILE_BASE_URL: "{{ FILE_BASE_URL }}"
 
           ports:
             - "9003:3000"
