@@ -1,9 +1,9 @@
 deploy:
   stage: deploy:uat
   variables:
-    PROJECT_NAME: pos/v2
+    PROJECT_NAME: pos
     SERVICE_TYPE: api-v4
-    SERVICE_NAMESPACE: ${PROJECT_NAME}/${SERVICE_TYPE}
+    SERVICE_NAMESPACE: ${PROJECT_NAME}/V2/${SERVICE_TYPE}
     ENABLED_BUILD: "true"
     IP_ADDRESS: "109.123.234.230"
   environment:
