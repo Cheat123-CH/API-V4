@@ -10,7 +10,7 @@ deploy:
     name: 'CamCyber/${PROJECT_NAME}/Development'
   only:
     # - /^v-.*-release$/
-    - testing-executor
+    - uat
   before_script:
     - source "${CAMCYBER_UAT_ENVIRONMENT}"
   script:
