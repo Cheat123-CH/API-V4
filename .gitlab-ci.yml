@@ -3,11 +3,11 @@ image:
   pull_policy: always
 
 stages:
-  # - "audit"
-  # - "build:uat"
-  # - "build:production"
+  - "audit"
+  - "build:uat"
+  - "build:production"
   - "deploy:uat"
-  # - "deploy:production"
+  - "deploy:production"
 before_script:
   - echo $CI_BUILDS_DIR
 include:
