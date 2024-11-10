@@ -66,7 +66,7 @@
     project_name: "{{ service_type }}"
     recreate: always
     definition:
-      version: '3.8'
+      version: "3.8"
       services:
         # amt_nginx:
         #   image: nginx:alpine
@@ -82,7 +82,7 @@
         #   networks:
         #     - camcyber
 
-        api:
+        pos-v2-api:
           container_name: pos-v2-api
           build:
             context: "{{ app_dir }}"
@@ -97,7 +97,7 @@
             DB_USERNAME: "{{ DB_USERNAME }}"
             DB_PASSWORD: "{{ DB_PASSWORD }}"
             DB_DATABASE: "{{ DB_DATABASE }}"
-            
+
             # JWT Configuration
             JWT_SECRET: "{{ JWT_SECRET }}"
             JWT_EXPIRES: "{{ JWT_EXPIRES }}"
@@ -109,7 +109,7 @@
             FILE_SERVICE_URL: "{{ FILE_SERVICE_URL }}"
 
           ports:
-            - '8208:1000'
+            - "9003:3000"
           networks:
             - camcyber
       networks:
