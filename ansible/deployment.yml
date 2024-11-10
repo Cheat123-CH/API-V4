@@ -2,7 +2,8 @@
 - hosts: camcyber_dev
   gather_facts: no
   any_errors_fatal: no
-  become: no
+  debugger: on_failed
+  no_log: true
+  become: yes
   roles:
-    - role: deployment
-
+    - deployment
