@@ -1,6 +1,7 @@
 APP_NAME: pos
 # DEV_OTP: '1'
 #==========================>> DB Config
+DB_CONNECTION: postgres
 DB_HOST: postgres
 DB_PORT: 5432
 DB_USERNAME: postgres
