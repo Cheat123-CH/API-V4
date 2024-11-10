@@ -92,7 +92,7 @@
           environment:
             APP_NAME: "{{ APP_NAME }}"
             # DEV_OTP: "{{ DEV_OTP }}"
-            DB_CONNECTION: "{ DB_CONNECTION }"
+            DB_CONNECTION: "{{ DB_CONNECTION }}"
             DB_HOST: "{{ DB_HOST }}"
             DB_PORT: "{{ DB_PORT }}"
             DB_USERNAME: "{{ DB_USERNAME }}"
