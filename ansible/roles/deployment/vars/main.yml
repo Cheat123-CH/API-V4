@@ -17,3 +17,17 @@ FILE_BASE_URL: http://container_file:8080
 # FILE_KEY     :    
 # FILE_USERNAME:    
 # FILE_PASSWORD:   
+  
+#==========================>> Js report
+JS_BASE_URL: https://amt-report.uat.camcyber.com
+JS_USERNAME: admin
+JS_PASSWORD: amt@2024
+JS_TEMPLATE: /Invoice/main
+
+JS_TEMPLATE_POS: /report_pos/main
+JS_TEMPLATE_CASHIER: /report_cashier/main
+JS_TEMPLATE_PRODUCT: /report_product/main
+
+#===========================>> Telegram Bot
+TELEGRAM_BOT_TOKEN: 7593739467:AAENNf38VttIRP0VMWaq1R2Aq-uMIaF26OQ
+TELEGRAM_CHAT_ID: -1002334502755

@@ -109,6 +109,20 @@
             # FILE_PASSWORD: "{{ FILE_PASSWORD }}"
             FILE_BASE_URL: "{{ FILE_BASE_URL }}"
 
+            #JS Report
+            JS_BASE_URL: "{{ JS_BASE_URL }}"
+            JS_USERNAME: "{{ JS_USERNAME }}"
+            JS_USERNAME: "{{ JS_USERNAME }}"
+            JS_TEMPLATE: "{{ JS_TEMPLATE }}"
+
+            JS_TEMPLATE_POS: "{{ JS_TEMPLATE_POS }}"
+            JS_TEMPLATE_CASHIER: "{{ JS_TEMPLATE_CASHIER }}"
+            JS_TEMPLATE_PRODUCT: "{{ JS_TEMPLATE_PRODUCT }}"
+
+            #===========================>> Telegram Bot
+            TELEGRAM_BOT_TOKEN: "{{ TELEGRAM_BOT_TOKEN }}"
+            TELEGRAM_CHAT_ID: "{{ TELEGRAM_CHAT_ID }}"
+
           ports:
             - "9003:3000"
           networks:
