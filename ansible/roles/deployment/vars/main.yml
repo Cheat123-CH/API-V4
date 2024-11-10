@@ -1,0 +1,18 @@
+APP_NAME: pos
+# DEV_OTP: '1'
+#==========================>> DB Config
+DB_HOST: postgres
+DB_PORT: 5432
+DB_USERNAME: postgres
+DB_PASSWORD: secret
+DB_DATABASE: pos
+
+#==========================>> JWT
+JWT_SECRET: '6d8d73f7e3c0a76b1ad3cbf0c04a9b7d3c83a8e07f1e8a6d9e2efcb876c94e3fbd7c2a7851b1f98b7b2bfb0b31c27c5b'
+JWT_EXPIRES: '1w'
+
+#==========================>> File
+FILE_BASE_URL: http://container_file:8080
+# FILE_KEY     :    
+# FILE_USERNAME:    
+# FILE_PASSWORD:   
