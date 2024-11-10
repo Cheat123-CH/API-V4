@@ -1,7 +1,7 @@
 deploy:
   stage: deploy:uat
   variables:
-    PROJECT_NAME: POS
+    PROJECT_NAME: pos/v2
     SERVICE_TYPE: api-v4
     SERVICE_NAMESPACE: ${PROJECT_NAME}/${SERVICE_TYPE}
     ENABLED_BUILD: "true"
