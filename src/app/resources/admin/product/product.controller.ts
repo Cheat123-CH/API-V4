@@ -38,6 +38,11 @@ export class ProductController {
         return await this._service.listing(page_size, page, key, type_id, creator_id, startDate, endDate);
     }
 
+    @Get('/:id')
+    async view(@Param('id', ParseIntPipe) id: number) {
+        return await this._service.view(id);
+    }
+
     @Post()
     @UsePipes(ProductsTypeExistsPipe)
     async create(@Body() body: CreateProductDto, @UserDecorator() auth: User,): Promise<{ data: Product, message: string }> {

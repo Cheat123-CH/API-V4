@@ -15,21 +15,31 @@ import { AdminModule } from './resources/admin/admin.module';
 import { CashierModule } from './resources/cashier/cashier.module';
 import { UtilsModule } from './utils/utils.module';
 
+import { DefaultFuncitonModule } from './resources/testing/default_function/default_function.module';
+
 // ======================== >> Code Starts Here << ========================== //
 @Module({
     controllers: [
         AppController
     ],
     imports: [
+
         ConfigModule,
+
         //===================== ROLE ACCOUNT
         AccountModule,
+
         //===================== ROLE ADMIN
         AdminModule,
+
         //===================== ROLE Cashier
         CashierModule,
+
         //===================== Share Utils
         UtilsModule,
+
+        //===================== Testing
+        DefaultFuncitonModule,
 
         //===================== END OF ROLE USER
         RouterModule.register(appRoutes),
@@ -51,7 +61,8 @@ export class AppModule implements NestModule {
         consumer.apply(JwtMiddleware)
             .exclude(
                 { path: '', method: RequestMethod.GET },
-                { path: 'api/account/auth/(.*)', method: RequestMethod.POST }
+                { path: 'api/account/auth/(.*)', method: RequestMethod.POST }, 
+                { path: 'api/testing/(.*)', method: RequestMethod.GET }
             ).forRoutes({ path: '*', method: RequestMethod.ALL });
     }
 }

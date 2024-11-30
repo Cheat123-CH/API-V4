@@ -32,10 +32,30 @@ export class UserService {
         userId: number,
         page_size: number = 10,
         page: number = 1,
-        key?: string
+        key?: string,
+        type_id?: number,
+        startDate?: string,
+        endDate?: string
     ): Promise<List> {
         const offset = (page - 1) * page_size;
 
+        // Helper function to convert date to Cambodia's timezone (UTC+7)
+        const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
+            const date = new Date(dateString);
+            const utcOffset = 7 * 60; // UTC+7 offset in minutes
+            const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
+
+            if (isEndOfDay) {
+                localDate.setHours(23, 59, 59, 999); // End of day
+            } else {
+                localDate.setHours(0, 0, 0, 0); // Start of day
+            }
+            return localDate;
+        };
+
+        // Calculate start and end dates for the filter
+        const start = startDate ? toCambodiaDate(startDate) : null;
+        const end = endDate ? toCambodiaDate(endDate, true) : null;
         const where = {
             [Op.and]: [
                 key
@@ -47,31 +67,29 @@ export class UserService {
                     }
                     : {},
                 { id: { [Op.not]: userId } },
+                start && end ? { created_at: { [Op.between]: [start, end] } } : {}
             ],
         };
 
+        // Fetch data with the necessary associations and calculated fields
         const data = await User.findAll({
             attributes: [
                 'id', 'name', 'avatar', 'phone', 'email',
                 'is_active', 'last_login', 'created_at',
                 [
-                    literal(`
-                        (
-                            SELECT COUNT(o.id)
-                            FROM "order" AS o
-                            WHERE o.cashier_id = "User".id
-                        )
-                    `),
+                    literal(`(
+                        SELECT COUNT(o.id)
+                        FROM "order" AS o
+                        WHERE o.cashier_id = "User".id
+                    )`),
                     'totalOrders',
                 ],
                 [
-                    literal(`
-                        (
-                            SELECT COALESCE(SUM(o.total_price), 0)
-                            FROM "order" AS o
-                            WHERE o.cashier_id = "User".id
-                        )
-                    `),
+                    literal(`(
+                        SELECT COALESCE(SUM(o.total_price), 0)
+                        FROM "order" AS o
+                        WHERE o.cashier_id = "User".id
+                    )`),
                     'totalSales',
                 ],
             ],
@@ -79,6 +97,7 @@ export class UserService {
                 {
                     model: UserRoles,
                     attributes: ['id', 'role_id'],
+                    //where: type_id ? { role_id: type_id } : null,
                     include: [
                         {
                             model: Role,
@@ -86,18 +105,14 @@ export class UserService {
                         },
                     ],
                 },
-                {
-                    model: Order,
-                    attributes: [],
-                },
             ],
             where,
             order: [['id', 'DESC']],
             limit: page_size,
             offset,
-            // raw: true,
         });
 
+        // Calculate total count without `include` for pagination
         const totalCount = await User.count({ where });
         const totalPages = Math.ceil(totalCount / page_size);
 
@@ -113,6 +128,7 @@ export class UserService {
 
         return dataFormat;
     }
+
 
     async view(userId: number) {
         const data = await User.findByPk(userId, {
@@ -188,7 +204,7 @@ export class UserService {
     async create(body: CreateUserDto, userId: number): Promise<Create> {
         let user: User;
         try {
-            
+
             // Check if a user with the same phone or email already exists
             user = await User.findOne({
                 where: {

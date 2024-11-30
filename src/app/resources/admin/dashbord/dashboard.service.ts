@@ -114,7 +114,6 @@ export class DashboardService {
                 message: "ទទួលបានទិន្នន័យដោយជោគជ័យ",
             };
         } catch (err) {
-            console.error("Error fetching static data:", err.message);
             throw new BadRequestException(err.message);
         }
     }
@@ -176,7 +175,6 @@ export class DashboardService {
 
             return { data: cashiers };
         } catch (err) {
-            console.error("Error fetching cashier data:", err.message);
             throw new BadRequestException(err.message);
         }
     }
@@ -267,7 +265,6 @@ export class DashboardService {
             return result;
 
         } catch (err) {
-            console.error("Error fetching product types and their counts:", err.message);
             throw new BadRequestException(err.message);
         }
     }
@@ -330,7 +327,6 @@ export class DashboardService {
             return result;
 
         } catch (err) {
-            console.error("Error fetching sales data:", err.message);
             throw new BadRequestException(err.message);
         }
     }
@@ -342,12 +338,19 @@ export class DashboardService {
         threeMonthAgo?: string;
         sixMonthAgo?: string;
     }): { startDate: Date; endDate: Date } | null {
-        if (filters.thisWeek) return this.getDefaultWeekRange();
-        if (filters.thisMonth) return this.getMonthRange(0); // Current month
-        if (filters.threeMonthAgo) return this.getMonthRange(3); // Three months ago
-        if (filters.sixMonthAgo) return this.getMonthRange(6); // Six months ago
-        return null;
+        if (filters.thisWeek) {
+            return this.getDefaultWeekRange();
+        } else if (filters.thisMonth) {
+            return this.getMonthRange(filters.thisMonth); // Current month
+        } else if (filters.threeMonthAgo) {
+            return this.getMonthRange(filters.threeMonthAgo); // Three months ago
+        } else if (filters.sixMonthAgo) {
+            return this.getMonthRange(filters.sixMonthAgo); // Six months ago
+        } else {
+            return null;
+        }
     }
+
 
     // Helper to get the current week range
     private getDefaultWeekRange(): { startDate: Date; endDate: Date } {
@@ -357,9 +360,10 @@ export class DashboardService {
     }
 
     // Helper to get a month range based on offset
-    private getMonthRange(monthOffset: number): { startDate: Date; endDate: Date } {
-        const startDate = this.startOfMonth(this.subtractMonths(new Date(), monthOffset));
+    private getMonthRange(thisMonth: string): { startDate: Date; endDate: Date } {
+        const startDate = new Date(thisMonth);
         const endDate = this.endOfDay(new Date());
+        console.log(startDate, endDate)
         return { startDate, endDate };
     }
 

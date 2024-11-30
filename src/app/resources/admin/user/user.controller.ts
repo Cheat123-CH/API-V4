@@ -24,14 +24,17 @@ export class UserController {
     async listing(@UserDecorator() auth: User,
         @Query('page_size') page_size?: number,
         @Query('page') page?: number,
-        @Query('key') key?: string,): Promise<List> {
+        @Query('key') key?: string,
+        @Query('type') type_id?: number,
+        @Query('startDate') startDate?: string,
+        @Query('endDate') endDate?: string): Promise<List> {
         if (!page_size) {
             page_size = 10;
         }
         if (!page) {
             page = 1;
         }
-        return await this.userService.listing(auth.id, page_size, page, key);
+        return await this.userService.listing(auth.id, page_size, page, key, type_id , startDate, endDate);
     }
 
     @Get('/:id')

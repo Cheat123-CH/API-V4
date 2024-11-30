@@ -7,12 +7,11 @@ import * as useragent from 'useragent';
 @Injectable()
 export class DeviceTrackerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    // Attempt to retrieve the client's IP address from multiple headers
     let ip =
-      req.headers['x-forwarded-for']?.toString().split(',')[0] || // Proxy or load balancer IP
-      req.connection?.remoteAddress || // Direct connection IP
-      req.socket?.remoteAddress || // Raw TCP connection IP
-      requestIp.getClientIp(req) || // Fallback to request-ip
+      req.headers['x-forwarded-for']?.toString().split(',')[0] ||
+      req.connection?.remoteAddress ||
+      req.socket?.remoteAddress ||
+      requestIp.getClientIp(req) ||
       '127.0.0.1'; // Default to localhost for development
 
     // Normalize IPv4-mapped IPv6 address (e.g., ::ffff:192.168.1.1 -> 192.168.1.1)
@@ -21,7 +20,7 @@ export class DeviceTrackerMiddleware implements NestMiddleware {
     }
 
     if (ip === '::1' || ip === '127.0.0.1') {
-      ip = '127.0.0.1'; 
+      ip = '127.0.0.1';
     }
 
     // Parse User-Agent header to detect the device and browser

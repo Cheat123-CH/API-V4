@@ -7,6 +7,6 @@ export class AppController {
     @Get()
     @Render('index')
     root() {
-        return { title: 'POS CamCyber' };
+        return { title: 'CamCyber POS API' };
     }
 }

@@ -6,6 +6,7 @@ import { literal, Op } from 'sequelize';
 
 // ===========================================================================>> Costom Library
 import OrderDetails from '@models/order/detail.model';
+import Order from '@models/order/order.model';
 import User from '@models/user/users.model';
 import { FileService } from 'src/app/services/file.service';
 import Product from 'src/models/product/product.model';
@@ -36,7 +37,6 @@ export class ProductService {
             },
         };
     }
-
 
     async listing(
         page_size: number = 10,
@@ -94,7 +94,7 @@ export class ProductService {
                     'created_at',
                     [
                         literal(`(
-                  SELECT COUNT(*) 
+                  SELECT SUM(qty) 
                   FROM order_details AS od 
                   WHERE od.product_id = "Product"."id"
                 )`),
@@ -145,6 +145,34 @@ export class ProductService {
             console.error('Error in listing method:', error); // Log the error for debugging
             throw new Error('Internal server error');
         }
+    }
+
+    async view(product_id: number) {
+        const where: any = {
+            product_id: product_id,
+        };
+
+        const data = await Order.findAll({
+            attributes: ['id', 'receipt_number', 'total_price', 'platform', 'ordered_at'],
+            include: [
+                {
+                    model: OrderDetails,
+                    where: where,
+                    attributes: ['id', 'unit_price', 'qty'],
+                    include: [
+                        {
+                            model: Product,
+                            attributes: ['id', 'name', 'code', 'image'],
+                            include: [{ model: ProductsType, attributes: ['name'] }],
+                        },
+                    ],
+                },
+                { model: User, attributes: ['id', 'avatar', 'name'] },
+            ],
+            order: [['ordered_at', 'DESC']],
+            limit: 10,
+        });
+        return { data: data };
     }
 
     // Method to create a new product
