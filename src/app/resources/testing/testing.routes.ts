@@ -2,11 +2,22 @@
 import { Routes } from '@nestjs/core';
 
 // ===========================================================================>> Custom Library
-import { DefaultFuncitonModule } from './default_function/default_function.module';
+import { BasicModule } from './basic/basic.module';
+import { TelegramModule } from './third-party/telegram/telegram.module';
+import { SMSModule } from './third-party/sms/sms.module';
 
 export const testingRoutes: Routes = [
     {
-        path: 'testing',
-        module: DefaultFuncitonModule
+        path: 'basic',
+        module: BasicModule
+    }, 
+
+    {
+        path: 'telegram',
+        module: TelegramModule
+    }, 
+    {
+        path: 'sms',
+        module: SMSModule
     }
 ];

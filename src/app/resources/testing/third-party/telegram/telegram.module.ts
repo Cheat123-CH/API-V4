@@ -2,12 +2,12 @@
 import { Module } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
-import { DefaultFunctionController } from './default_function.controller';
-import { DefaultFunctionService } from './default_function.service';
+import { TelegramController } from './telegram.controller';
+import { TelegramService } from './telegram.service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Module({
-    controllers: [DefaultFunctionController],
-    providers: [DefaultFunctionService]
+    controllers: [TelegramController],
+    providers: [TelegramService]
 })
-export class DefaultFuncitonModule { }
+export class TelegramModule { }
