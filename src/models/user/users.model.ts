@@ -9,7 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { ActiveEnum } from 'src/app/enums/active.enum';
 import Role from './role.model';
 import UserOTP from './user_otps.model';
-@Table({ tableName: 'users', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true })
+@Table({ tableName: 'user', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true })
 class User extends Model<User> {
 
     // ============================================================================================= Primary Key

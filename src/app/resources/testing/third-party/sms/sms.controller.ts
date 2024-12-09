@@ -1,9 +1,12 @@
 // =========================================================================>> Core Library
-import { Body, Controller, Get, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import * as path from 'path';
+import { SendEmailDto, SendFileDto } from './sms.dto';
 import { SMSService } from './sms.service';
-
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()
 export class SMSController {
@@ -11,18 +14,38 @@ export class SMSController {
     constructor(private readonly _service: SMSService) { };
 
     // ====================================================>> Send Message
-    @Get('send-message')
-    async sendMessage(
 
-        @Query('phone_num') phone_num?: string, 
-        @Query('text') text?: string
-    
-    ): Promise<{ result: string  }> {
+    @Post('send-message')
+    async sendMessage(@Body() sendEmailDto: SendEmailDto): Promise<any> {
+        const { smtpUser, smtpPass, toEmail, message } = sendEmailDto;
+        return this._service.sendEmail(smtpUser, smtpPass, toEmail, message);
+    }
 
-        return await this._service.sendMessage(phone_num, text);
+    @Post('send-file')
+    @UseInterceptors(
+        FileInterceptor('file', {
+            storage: diskStorage({
+                destination: './uploads', // Directory to save uploaded files
+                filename: (req, file, cb) => {
+                    // Use original file name for the uploaded file
+                    cb(null, file.originalname);
+                },
+            }),
+        }),
+    )
+    async sendFile(
+        @UploadedFile() file: Express.Multer.File,
+        @Body() sendFileDto: SendFileDto,
+    ): Promise<any> {
+        const { smtpUser, smtpPass, toEmail } = sendFileDto;
 
+        if (!file) {
+            throw new BadRequestException('No file uploaded. Please upload a file.');
+        }
+
+        const filePath = path.resolve('./uploads', file.filename);
+        return this._service.sendFile(smtpUser, smtpPass, toEmail, filePath, file.originalname); // Pass original name
     }
 
 
-    
 }

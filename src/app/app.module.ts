@@ -16,8 +16,9 @@ import { CashierModule } from './resources/cashier/cashier.module';
 import { UtilsModule } from './utils/utils.module';
 
 import { BasicModule } from './resources/testing/basic/basic.module';
-import { TelegramModule } from './resources/testing/third-party/telegram/telegram.module';
+import { ReportJSModule } from './resources/testing/third-party/report/report.module';
 import { SMSModule } from './resources/testing/third-party/sms/sms.module';
+import { TelegramModule } from './resources/testing/third-party/telegram/telegram.module';
 
 // ======================== >> Code Starts Here << ========================== //
 @Module({
@@ -44,6 +45,7 @@ import { SMSModule } from './resources/testing/third-party/sms/sms.module';
         BasicModule,
         TelegramModule,
         SMSModule,
+        ReportJSModule,
 
         //===================== END OF ROLE USER
         RouterModule.register(appRoutes),
@@ -65,8 +67,8 @@ export class AppModule implements NestModule {
         consumer.apply(JwtMiddleware)
             .exclude(
                 { path: '', method: RequestMethod.GET },
-                { path: 'api/account/auth/(.*)', method: RequestMethod.POST }, 
-                { path: 'api/testing/(.*)', method: RequestMethod.GET }
+                { path: 'api/account/auth/(.*)', method: RequestMethod.POST },
+                { path: 'api/testing/(.*)', method: RequestMethod.ALL }, 
             ).forRoutes({ path: '*', method: RequestMethod.ALL });
     }
 }

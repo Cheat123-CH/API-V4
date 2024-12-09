@@ -2,7 +2,7 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 import User from './users.model';
 
-@Table({ tableName: 'users_logs', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true, })
+@Table({ tableName: 'user_log', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true, })
 class UsersLogs extends Model<UsersLogs> {
     
     // ============================================================================================= Primary Key
