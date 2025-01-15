@@ -13,7 +13,7 @@ import sequelizeConfig from 'src/config/sequelize.config';
 import OrderDetails from 'src/models/order/detail.model';
 import Order from 'src/models/order/order.model';
 import Product from 'src/models/product/product.model';
-import ProductsType from 'src/models/product/type.model';
+import ProductType from 'src/models/product/type.model';
 import { CreateOrderDto } from './order.pos.dto';
 
 // ======================================= >> Code Starts Here << ========================== //
@@ -25,7 +25,7 @@ export class OrderService {
     ) { };
 
     async getProducts(): Promise<{ data: { id: number, name: string, products: Product[] }[] }> {
-        const data = await ProductsType.findAll({
+        const data = await ProductType.findAll({
             attributes: ['id', 'name'],
             include: [
                 {
@@ -33,7 +33,7 @@ export class OrderService {
                     attributes: ['id', 'type_id', 'name', 'image', 'unit_price', 'code'],
                     include: [
                         {
-                            model: ProductsType,
+                            model: ProductType,
                             attributes: ['name'],
                         },
                     ],
@@ -120,7 +120,7 @@ export class OrderService {
                                 attributes: ['id', 'name', 'code', 'image'],
                                 include: [
                                     {
-                                        model: ProductsType,
+                                        model: ProductType,
                                         attributes: ['name'],
                                     }
                                 ]

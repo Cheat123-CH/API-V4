@@ -6,7 +6,7 @@ import { Op, Sequelize } from 'sequelize';
 // ===========================================================================>> Costom Library
 import OrderDetails from '@models/order/detail.model';
 import Product from '@models/product/product.model';
-import ProductsType from '@models/product/type.model';
+import ProductType from '@models/product/type.model';
 import User from '@models/user/users.model';
 import Order from 'src/models/order/order.model';
 import { List } from './sale.types';
@@ -22,7 +22,7 @@ export class SaleService {
         return { data: data };
     }
 
-    async listing(userId: number, page_size: number = 10, page: number = 1, key?: string, platform?: string, startDate?: string, endDate?: string) {
+    async getData(userId: number, page_size: number = 10, page: number = 1, key?: string, platform?: string, startDate?: string, endDate?: string) {
         try {
             const offset = (page - 1) * page_size;
 
@@ -75,7 +75,7 @@ export class SaleService {
                                 attributes: ['id', 'name', 'code', 'image'],
                                 include: [
                                     {
-                                        model: ProductsType,
+                                        model: ProductType,
                                         attributes: ['name'],
                                     }
                                 ]
@@ -130,7 +130,7 @@ export class SaleService {
                                 attributes: ['id', 'name', 'code', 'image'],
                                 include: [
                                     {
-                                        model: ProductsType,
+                                        model: ProductType,
                                         attributes: ['name'],
                                     }
                                 ]

@@ -6,7 +6,7 @@ import { AdminMiddleware } from '@app/core/middlewares/admin.middleware';
 import { DeviceTrackerMiddleware } from '@app/core/middlewares/device-tracker.middleware';
 import { DashboardModule } from './dashbord/dashboard.module';
 import { ProductModule } from './product/product.module';
-import { ProductsTypeModule } from './product/type/type.module';
+import { ProductTypeModule } from './product/type/type.module';
 import { SaleModule } from './sale/sale.module';
 import { UserModule } from './user/user.module';
 
@@ -16,7 +16,7 @@ import { UserModule } from './user/user.module';
         DashboardModule,
         SaleModule,
         ProductModule,
-        ProductsTypeModule,
+        ProductTypeModule,
         UserModule
     ]
 })

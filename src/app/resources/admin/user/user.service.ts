@@ -8,7 +8,7 @@ import { literal, Op } from "sequelize";
 import OrderDetails from "@models/order/detail.model";
 import Order from "@models/order/order.model";
 import Product from "@models/product/product.model";
-import ProductsType from "@models/product/type.model";
+import ProductType from "@models/product/type.model";
 import Role from "@models/user/role.model";
 import UserRoles from "@models/user/user_roles.model";
 import User from "@models/user/users.model";
@@ -28,7 +28,7 @@ export class UserService {
         return { roles: roles };
     }
 
-    async listing(
+    async getData(
         userId: number,
         page_size: number = 10,
         page: number = 1,
@@ -188,7 +188,7 @@ export class UserService {
                         {
                             model: Product,
                             attributes: ['id', 'name', 'code', 'image'],
-                            include: [{ model: ProductsType, attributes: ['name'] }],
+                            include: [{ model: ProductType, attributes: ['name'] }],
                         },
                     ],
                 },

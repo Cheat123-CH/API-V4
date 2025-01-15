@@ -33,7 +33,7 @@ export class SaleController {
             page = 1;
         }
 
-        return await this._service.listing(auth.id, page_size, page, key, platform, startDate, endDate);
+        return await this._service.getData(auth.id, page_size, page, key, platform, startDate, endDate);
     }
     @Get(':id/view')
     async view(@Param('id') id: number

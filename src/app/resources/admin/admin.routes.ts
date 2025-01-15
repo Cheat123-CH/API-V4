@@ -4,7 +4,7 @@ import { Routes } from '@nestjs/core';
 // ===========================================================================>> Custom Library
 import { DashboardModule } from './dashbord/dashboard.module';
 import { ProductModule } from './product/product.module';
-import { ProductsTypeModule } from './product/type/type.module';
+import { ProductTypeModule } from './product/type/type.module';
 import { SaleModule } from './sale/sale.module';
 import { UserModule } from './user/user.module';
 
@@ -24,8 +24,9 @@ export const adminRoutes: Routes = [
     },
     {
         path: 'products/types',
-        module: ProductsTypeModule
+        module: ProductTypeModule
     },
+   
     {
         path: 'users',
         module: UserModule

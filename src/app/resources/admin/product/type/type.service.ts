@@ -11,65 +11,47 @@ import { Op, Sequelize } from "sequelize";
 // ===========================================================================>> Custom Library
 import { FileService } from "@app/services/file.service";
 import Product from "src/models/product/product.model";
-import ProductsType from "src/models/product/type.model";
+import ProductType from "src/models/product/type.model";
 import { CreateProductTypeDto, UpdateProductTypeDto } from "./type.dto";
 
 @Injectable()
-export class ProductsTypeService {
+export class ProductTypeService {
   constructor(private readonly fileService: FileService) {}
 
   // ==========================================>> get data
-  async getData(): Promise<{
-    data: {
-      id: number;
-      name: string;
-      created_at: Date;
-      n_of_products: number;
-    }[];
-  }> {
-    const data = await ProductsType.findAll({
-      attributes: [
-        "id",
-        "name",
-        "image",
-        "created_at",
-        [Sequelize.fn("COUNT", Sequelize.col("products.id")), "n_of_products"], // Fixing the COUNT function
-      ],
-      include: [
-        {
-          model: Product,
-          attributes: [], // We don't need any product attributes, just the count
-        },
-      ],
-      group: ["ProductsType.id"], // Group by the ProductsType id
-      order: [["name", "ASC"]], // Order by name
-    });
+  async getData(){
 
-    // Formatting the result
-    const dataFormat = data.map((type) => ({
-      id: type.id,
-      name: type.name,
-      image: type.image,
-      created_at: type.created_at,
-      n_of_products: type.get("n_of_products") || 0, // Using `get` method to access the alias field
-    }));
+    try {
 
-    // Returning the formatted data
-    return {
-      data: dataFormat as {
-        id: number;
-        name: string;
-        created_at: Date;
-        n_of_products: number;
-      }[],
-    };
+      const data = await ProductType.findAll({
+        attributes: [  "id", "name",  "image", "created_at", [Sequelize.fn("COUNT", Sequelize.col("products.id")), "n_of_products"]],
+        include: [
+          {
+            model: Product,
+            attributes: [], // We don't need any product attributes, just the count
+          },
+        ],
+        group: ["ProductType.id"], // Group by the ProductType id
+        order: [["name", "ASC"]], // Order by name
+      });
+
+      return {
+        data: data
+      }; 
+
+    } catch (error) {
+
+      throw new BadRequestException('admin/product/type/getData', error);
+    }
+
+    
   }
 
   // ==========================================>> create
   async create(
     body: CreateProductTypeDto
-  ): Promise<{ data: ProductsType; message: string }> {
-    const checkExistName = await ProductsType.findOne({
+  ): Promise<{ data: ProductType; message: string }> {
+    const checkExistName = await ProductType.findOne({
       where: { name: body.name },
     });
     if (checkExistName) {
@@ -85,7 +67,7 @@ export class ProductsTypeService {
     // Replace base64 string by file URI from FileService
     body.image = result.file.uri;
 
-    const productType = await ProductsType.create({
+    const productType = await ProductType.create({
       name: body.name,
       image: "abc",
     });
@@ -93,7 +75,7 @@ export class ProductsTypeService {
     const dataFormat = {
       data: productType,
       message: "Product type has been created.",
-    } as { data: ProductsType; message: string };
+    } as { data: ProductType; message: string };
 
     return dataFormat;
   }
@@ -102,8 +84,8 @@ export class ProductsTypeService {
   async update(
     body: UpdateProductTypeDto,
     id: number
-  ): Promise<{ data: ProductsType; message: string }> {
-    const checkExist = await ProductsType.findByPk(id);
+  ): Promise<{ data: ProductType; message: string }> {
+    const checkExist = await ProductType.findByPk(id);
     if (!checkExist) {
       throw new BadRequestException("គ្មានទិន្នន័យនៅក្នុងប្រព័ន្ធ");
     }
@@ -120,7 +102,7 @@ export class ProductsTypeService {
     } else {
       body.image = undefined;
     }
-    const checkExistName = await ProductsType.findOne({
+    const checkExistName = await ProductType.findOne({
       where: {
         id: { [Op.not]: id },
         name: body.name,
@@ -129,16 +111,16 @@ export class ProductsTypeService {
     if (checkExistName) {
       throw new BadRequestException("ឈ្មោះនេះមានក្នុងប្រព័ន្ធ");
     }
-    await ProductsType.update(body, {
+    await ProductType.update(body, {
       where: { id: id },
     });
 
     const dataFormat = {
-      data: await ProductsType.findByPk(id, {
+      data: await ProductType.findByPk(id, {
         attributes: ["id", "name", "image", "updated_at"],
       }),
       message: "Product type has been created.",
-    } as { data: ProductsType; message: string };
+    } as { data: ProductType; message: string };
     return dataFormat;
   }
 
@@ -154,12 +136,12 @@ export class ProductsTypeService {
 
       if (productsCount > 0) {
         throw new BadRequestException(
-          "Cannot delete. Products are associated with this ProductsType."
+          "Cannot delete. Products are associated with this ProductType."
         );
       }
 
       // No associated products, proceed with deletion
-      const rowsAffected = await ProductsType.destroy({
+      const rowsAffected = await ProductType.destroy({
         where: {
           id: id,
         },

@@ -9,7 +9,7 @@ import { RoleEnum } from '@app/enums/role.enum';
 import { JsReportService } from '@app/services/js-report.service';
 import Order from '@models/order/order.model';
 import Product from '@models/product/product.model';
-import ProductsType from '@models/product/type.model';
+import ProductType from '@models/product/type.model';
 import Role from '@models/user/role.model';
 import UserRoles from '@models/user/user_roles.model';
 import User from '@models/user/users.model';
@@ -237,14 +237,14 @@ export class DashboardService {
             // Construct the SQL date condition
             const dateCondition = `AND p.created_at BETWEEN '${startDate.toISOString()}' AND '${endDate.toISOString()}'`;
 
-            const productTypesWithProductCounts = await ProductsType.findAll({
+            const productTypesWithProductCounts = await ProductType.findAll({
                 attributes: [
                     'id',
                     'name',
                     [Sequelize.literal(`(
                         SELECT COUNT(*)
                         FROM product AS p
-                        WHERE p.type_id = "ProductsType".id
+                        WHERE p.type_id = "ProductType".id
                         ${dateCondition}
                     )`), 'productCount'],
                 ],
@@ -254,7 +254,7 @@ export class DashboardService {
                         attributes: [], // Only count, no need for product details
                     },
                 ],
-                group: ['ProductsType.id'],
+                group: ['ProductType.id'],
             });
 
             const result = {
@@ -510,7 +510,7 @@ export class DashboardService {
     }
 
     private async countProductType(filter: any): Promise<number> {
-        return ProductsType.count({
+        return ProductType.count({
             // where: filter
         });
     }

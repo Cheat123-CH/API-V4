@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, U
 
 // ===========================================================================>> Costom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
-import { ProductsTypeExistsPipe } from '@app/core/pipes/product.pipe';
+import { ProductTypeExistsPipe } from '@app/core/pipes/product.pipe';
 import User from '@models/user/users.model';
 import Product from 'src/models/product/product.model';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
@@ -18,15 +18,15 @@ export class ProductController {
         return await this._service.setup();
     }
 
-    @Get()
-    async listing(
-        @Query('page_size') page_size?: number,
-        @Query('page') page?: number,
-        @Query('key') key?: string,
-        @Query('type_id') type_id?: number,
+    @Get('/')
+    async getData(
+        @Query('page_size') page_size?  : number,
+        @Query('page') page?            : number,
+        @Query('key') key?              : string,
+        @Query('type_id') type_id?      : number,
         @Query('creator_id') creator_id?: number,
-        @Query('startDate') startDate?: string,
-        @Query('endDate') endDate?: string
+        @Query('startDate') startDate?  : string,
+        @Query('endDate') endDate?      : string
     ) {
         if (!page_size) {
             page_size = 10;
@@ -35,7 +35,7 @@ export class ProductController {
             page = 1;
         }
 
-        return await this._service.listing(page_size, page, key, type_id, creator_id, startDate, endDate);
+        return await this._service.getData(page_size, page, key, type_id, creator_id, startDate, endDate);
     }
 
     @Get('/:id')
@@ -44,13 +44,13 @@ export class ProductController {
     }
 
     @Post()
-    @UsePipes(ProductsTypeExistsPipe)
+    @UsePipes(ProductTypeExistsPipe)
     async create(@Body() body: CreateProductDto, @UserDecorator() auth: User,): Promise<{ data: Product, message: string }> {
         return await this._service.create(body, auth.id);
     }
 
     @Put(':id')
-    @UsePipes(ProductsTypeExistsPipe)
+    @UsePipes(ProductTypeExistsPipe)
     async update(
         @Param('id', ParseIntPipe) id: number,
         @Body() body: UpdateProductDto

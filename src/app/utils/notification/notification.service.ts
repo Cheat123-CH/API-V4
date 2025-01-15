@@ -8,7 +8,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 @Injectable()
 export class NotificationService {
 
-    async listing() {
+    async getData() {
         try {
             const notifications = await Notifications.findAll({
                 attributes: ['id', 'read'],

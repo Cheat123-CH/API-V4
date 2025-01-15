@@ -6,7 +6,7 @@ import { TelegramService } from '@app/services/telegram.service';
 import OrderDetails from '@models/order/detail.model';
 import Order from '@models/order/order.model';
 import Product from '@models/product/product.model';
-import ProductsType from '@models/product/type.model';
+import ProductType from '@models/product/type.model';
 import User from '@models/user/users.model';
 import { col, fn, Op } from 'sequelize';
 import { ProductReport } from './interface';
@@ -120,7 +120,7 @@ export class ReportService {
         return Product.findAll({
             attributes: ['id', 'name', 'unit_price'],
             include: [
-                { model: ProductsType, as: 'type', attributes: ['id', 'name'] },
+                { model: ProductType, as: 'type', attributes: ['id', 'name'] },
                 {
                     model: OrderDetails, as: 'pod',
                     where: { created_at: { [Op.between]: [startDate, endDate] } },

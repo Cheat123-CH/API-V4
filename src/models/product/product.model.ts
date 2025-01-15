@@ -4,7 +4,7 @@ import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from '
 // ================================================================================================= Custom Library
 import OrderDetails from '@models/order/detail.model';
 import User from '@models/user/users.model';
-import ProductsType from './type.model';
+import ProductType from './type.model';
 
 @Table({ tableName: 'product', createdAt: 'created_at', updatedAt: 'updated_at' })
 class Product extends Model<Product> {
@@ -13,7 +13,7 @@ class Product extends Model<Product> {
     @Column({ primaryKey: true, autoIncrement: true })                                              id: number;
 
     // ============================================================================================= Foreign Key
-    @ForeignKey(() => ProductsType) @Column({ onDelete: 'RESTRICT' })                               type_id: number;
+    @ForeignKey(() => ProductType) @Column({ onDelete: 'RESTRICT' })                               type_id: number;
     @ForeignKey(() => User) @Column({ onDelete: 'CASCADE' })                                        creator_id: number;
 
     // ============================================================================================= Field
@@ -25,7 +25,7 @@ class Product extends Model<Product> {
     @Column({ allowNull: false, type: DataType.DECIMAL(10, 2), defaultValue: 0 })                   discount: number;
     created_at: Date
     // ===========================================================================================>> Many to One
-    @BelongsTo(() => ProductsType)                                                                  type: ProductsType;
+    @BelongsTo(() => ProductType)                                                                  type: ProductType;
     @BelongsTo(() => User)                                                                          creator: User;
 
     // ===========================================================================================>> One to Many

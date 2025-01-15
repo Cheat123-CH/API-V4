@@ -10,7 +10,7 @@ import Order from '@models/order/order.model';
 import User from '@models/user/users.model';
 import { FileService } from 'src/app/services/file.service';
 import Product from 'src/models/product/product.model';
-import ProductsType from 'src/models/product/type.model';
+import ProductType from 'src/models/product/type.model';
 import { CreateProductDto, UpdateProductDto } from './product.dto';
 import { List } from './product.stype';
 
@@ -22,7 +22,7 @@ export class ProductService {
     // Method to retrieve the setup data for product types
     async setup() {
         // Fetch product types
-        const productTypes = await ProductsType.findAll({
+        const productTypes = await ProductType.findAll({
             attributes: ['id', 'name'],
         });
 
@@ -38,18 +38,23 @@ export class ProductService {
         };
     }
 
-    async listing(
-        page_size: number = 10,
-        page: number = 1,
-        key?: string,
-        type_id?: number,
-        creator_id?: number,
-        startDate?: string,
-        endDate?: string
+    async getData(
+        page_size   : number = 10,
+        page        : number = 1,
+        key?        : string,
+        type_id?    : number,
+        creator_id? : number,
+        startDate?  : string,
+        endDate?    : string
     ) {
+
         try {
+
+            
+
             const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
-                const date = new Date(dateString);
+
+                const date      = new Date(dateString);
                 const utcOffset = 7 * 60; // UTC+7 offset in minutes
                 const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
 
@@ -62,9 +67,9 @@ export class ProductService {
             };
 
             // Calculate start and end dates for the filter
-            const start = startDate ? toCambodiaDate(startDate) : null;
-            const end = endDate ? toCambodiaDate(endDate, true) : null;
-            const offset = (page - 1) * page_size;
+            const start     = startDate ? toCambodiaDate(startDate) : null;
+            const end       = endDate ? toCambodiaDate(endDate, true) : null;
+            const offset    = (page - 1) * page_size;
 
             // Define the WHERE condition based on provided parameters
             const where: any = {
@@ -94,17 +99,17 @@ export class ProductService {
                     'created_at',
                     [
                         literal(`(
-                  SELECT SUM(qty) 
-                  FROM order_details AS od 
-                  WHERE od.product_id = "Product"."id"
-                )`),
+                        SELECT SUM(qty) 
+                        FROM order_details AS od 
+                        WHERE od.product_id = "Product"."id"
+                        )`),
                         'total_sale',
                     ],
                 ],
                 where,
                 include: [
                     {
-                        model: ProductsType,
+                        model: ProductType,
                         attributes: ['id', 'name'],
                     },
                     {
@@ -163,7 +168,7 @@ export class ProductService {
                         {
                             model: Product,
                             attributes: ['id', 'name', 'code', 'image'],
-                            include: [{ model: ProductsType, attributes: ['name'] }],
+                            include: [{ model: ProductType, attributes: ['name'] }],
                         },
                     ],
                 },
@@ -211,7 +216,7 @@ export class ProductService {
                     'total_sale',]],
             include: [
                 {
-                    model: ProductsType,
+                    model: ProductType,
                     attributes: ['id', 'name']
                 },
                 {
@@ -282,7 +287,7 @@ export class ProductService {
                     'total_sale',]],
             include: [
                 {
-                    model: ProductsType,
+                    model: ProductType,
                     attributes: ['id', 'name']
                 },
                 {

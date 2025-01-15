@@ -21,7 +21,7 @@ export class UserController {
     }
 
     @Get()
-    async listing(@UserDecorator() auth: User,
+    async getData(@UserDecorator() auth: User,
         @Query('page_size') page_size?: number,
         @Query('page') page?: number,
         @Query('key') key?: string,
@@ -34,7 +34,7 @@ export class UserController {
         if (!page) {
             page = 1;
         }
-        return await this.userService.listing(auth.id, page_size, page, key, type_id , startDate, endDate);
+        return await this.userService.getData(auth.id, page_size, page, key, type_id , startDate, endDate);
     }
 
     @Get('/:id')

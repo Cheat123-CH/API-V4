@@ -33,7 +33,7 @@ export class SaleController {
             platform = '';
         }
 
-        return await this._service.listing(page_size, page, key, cashier_id, platform, startDate, endDate);
+        return await this._service.getData(page_size, page, key, cashier_id, platform, startDate, endDate);
     }
 
 

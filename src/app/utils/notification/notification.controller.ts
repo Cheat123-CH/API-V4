@@ -14,7 +14,7 @@ export class NotificationController {
 
     @Get()
     async getAllNotification() {
-        return await this._service.listing();
+        return await this._service.getData();
     }
 
     @Patch(':id/read')
