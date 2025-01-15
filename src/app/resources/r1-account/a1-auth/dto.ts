@@ -3,7 +3,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
 // ===========================================================================>> Costom Library
-import User from '@models/user/user.model';
+import User from '@app/models/user/user.model';
 
 export class UserDto {
     id: number;

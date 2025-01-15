@@ -3,10 +3,10 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { Op } from 'sequelize';
 // ================================================================>> Costom Library
 import { JsReportService } from '@app/services/js-report.service';
-import OrderDetails from '@models/order/detail.model';
-import Order from '@models/order/order.model';
-import Product from '@models/product/product.model';
-import User from '@models/user/user.model';
+import OrderDetails from '@app/models/order/detail.model';
+import Order from '@app/models/order/order.model';
+import Product from '@app/models/product/product.model';
+import User from '@app/models/user/user.model';
 
 @Injectable()
 export class InvoiceService {

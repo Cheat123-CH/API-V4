@@ -2,7 +2,7 @@
 import { BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 
 // ================================================================================================= Custom Library
-import UserRoles from '@models/user/user_roles.model';
+import UserRoles from './user_roles.model';
 import User from './user.model';
 
 @Table({ tableName: 'role', timestamps: false })

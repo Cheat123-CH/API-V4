@@ -1,14 +1,17 @@
 // ================================================================================================= Third Party Library
 import { BelongsTo, BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
+import * as bcrypt from 'bcryptjs';
 
 // ================================================================================================= Custom Library
-import Order from '@models/order/order.model';
-import Product from '@models/product/product.model';
-import UserRoles from '@models/user/user_roles.model';
-import * as bcrypt from 'bcryptjs';
 import { ActiveEnum } from 'src/app/enums/active.enum';
-import Role from './role.model';
-import UserOTP from './user_otps.model';
+
+import Order        from '../order/order.model';
+import Product      from '../product/product.model';
+
+import UserRoles    from './user_roles.model';
+import Role         from './role.model';
+import UserOTP      from './user_otps.model';
+
 @Table({ tableName: 'user', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true })
 class User extends Model<User> {
 

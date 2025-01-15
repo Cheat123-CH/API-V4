@@ -1,6 +1,6 @@
-import OrderDetails from "@models/order/detail.model";
-import Order from "@models/order/order.model";
-import Product from "@models/product/product.model";
+import OrderDetails from "@app/models/order/detail.model";
+import Order from "@app/models/order/order.model";
+import Product from "@app/models/product/product.model";
 
 export class OrderSeeder {
     public static async seed() {

@@ -5,7 +5,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPip
 
 import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
 
-import ProductType             from "src/models/product/type.model";
+import ProductType             from "@app/models/product/type.model";
 import { ProductTypeService }  from "./service";
 
 @Controller()

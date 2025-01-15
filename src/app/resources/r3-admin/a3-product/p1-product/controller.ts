@@ -4,8 +4,8 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, U
 // ===========================================================================>> Costom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
 import { ProductTypeExistsPipe } from '@app/core/pipes/product.pipe';
-import User from '@models/user/user.model';
-import Product from 'src/models/product/product.model';
+import User from '@app/models/user/user.model';
+import Product from 'src/app/models/product/product.model';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { ProductService } from './service';
 @Controller()

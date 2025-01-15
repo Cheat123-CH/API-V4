@@ -7,12 +7,12 @@ import { col, fn, Op, Sequelize, where } from 'sequelize';
 // ===========================================================================>> Custom Library
 import { RoleEnum } from '@app/enums/role.enum';
 import { JsReportService } from '@app/services/js-report.service';
-import Order from '@models/order/order.model';
-import Product from '@models/product/product.model';
-import ProductType from '@models/product/type.model';
-import Role from '@models/user/role.model';
-import UserRoles from '@models/user/user_roles.model';
-import User from '@models/user/user.model';
+import Order from '@app/models/order/order.model';
+import Product from '@app/models/product/product.model';
+import ProductType from '@app/models/product/type.model';
+import Role from '@app/models/user/role.model';
+import UserRoles from '@app/models/user/user_roles.model';
+import User from '@app/models/user/user.model';
 
 @Injectable()
 export class DashboardService {

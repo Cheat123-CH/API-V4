@@ -1,5 +1,5 @@
-import Product from "@models/product/product.model";
-import ProductType from "@models/product/type.model";
+import Product from "@app/models/product/product.model";
+import ProductType from "@app/models/product/type.model";
 
 export class ProductSeeder {
     public static async seed() {

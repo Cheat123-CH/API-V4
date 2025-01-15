@@ -2,8 +2,8 @@
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
 
 // ================================================================================================= Custom Library
-import Role from '@models/user/role.model';
-import User from '@models/user/user.model';
+import Role from './role.model';
+import User from './user.model';
 
 @Table({ tableName: 'user_roles', timestamps: false })
 class UserRoles extends Model<UserRoles> {

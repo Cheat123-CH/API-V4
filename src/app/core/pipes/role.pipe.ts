@@ -2,7 +2,7 @@
 import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
 // ================================================================>> Costom Library
-import Role from 'src/models/user/role.model';
+import Role from '@app/models/user/role.model';
 
 @Injectable()
 export class RoleExistsPipe implements PipeTransform {

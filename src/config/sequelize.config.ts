@@ -16,7 +16,7 @@ const sequelizeConfig: SequelizeModuleOptions = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_DATABASE,
     //timezone: process.env.DB_TIMEZONE || 'Asia/Phnom_Penh',
-    models: [__dirname + '/../models/**/*.model.{ts,js}'],
+    models: [__dirname + '/../app/models/**/*.model.{ts,js}'],
     logging: false
 };
 

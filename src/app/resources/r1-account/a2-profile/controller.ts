@@ -3,7 +3,7 @@ import { Body, Controller, Get, Put, Query } from '@nestjs/common';
 
 // ===========================================================================>> Costom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
-import User from '@models/user/user.model';
+import User from '@app/models/user/user.model';
 import { UpdatePasswordDto, UpdateUserDto } from './dto';
 import { ProfileService } from './service';
 @Controller()

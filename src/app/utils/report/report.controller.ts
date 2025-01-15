@@ -1,6 +1,6 @@
 // ===========================================================================>> Core Library
 import UserDecorator from '@app/core/decorators/user.decorator';
-import User from '@models/user/user.model';
+import User from '@app/models/user/user.model';
 import { Controller, Get, Query } from '@nestjs/common';
 import { ReportService } from './report.service';
 

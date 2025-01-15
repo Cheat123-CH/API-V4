@@ -5,6 +5,7 @@ import { Sequelize } from 'sequelize-typescript';
 
 // ================================================================>> Custom Library
 import sequelizeConfig from '@config/sequelize.config';
+
 import { OrderSeeder } from "./seeds/pos/order.seeder";
 import { ProductSeeder } from "./seeds/pos/product.seeder";
 import { UserSeeder } from "./seeds/user/user.seed";

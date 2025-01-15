@@ -3,9 +3,9 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
-import User from '@models/user/user.model';
-import Order from 'src/models/order/order.model';
-import Product from 'src/models/product/product.model';
+import User from '@app/models/user/user.model';
+import Order from '@app/models/order/order.model';
+import Product from '@app/models/product/product.model';
 import { CreateOrderDto } from './dto';
 import { OrderService } from './service';
 

@@ -10,8 +10,8 @@ import { Op, Sequelize } from "sequelize";
 
 // ===========================================================================>> Custom Library
 import { FileService } from "@app/services/file.service";
-import Product from "src/models/product/product.model";
-import ProductType from "src/models/product/type.model";
+import Product from "@app/models/product/product.model";
+import ProductType from "@app/models/product/type.model";
 import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
 
 @Injectable()

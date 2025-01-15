@@ -1,7 +1,7 @@
 // ================================================================>> Core Library
-import Notifications from '@models/notification/notification.model';
-import Order from '@models/order/order.model';
-import User from '@models/user/user.model';
+import Notifications from '@app/models/notification/notification.model';
+import Order from '@app/models/order/order.model';
+import User from '@app/models/user/user.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
 // ================================================================>> Costom Library
 

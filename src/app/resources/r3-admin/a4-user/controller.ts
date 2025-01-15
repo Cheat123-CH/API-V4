@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPip
 
 // ===========================================================================>> Costom Library
 import UserDecorator from "@app/core/decorators/user.decorator";
-import User from "@models/user/user.model";
+import User from "@app/models/user/user.model";
 import { CreateUserDto, UpdatePasswordDto, UpdateStatusDto, UpdateUserDto } from "./dto";
 import { Create, List, Update } from "./interface";
 import { UserService } from "./service";

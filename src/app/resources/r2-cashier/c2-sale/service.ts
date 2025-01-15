@@ -4,11 +4,11 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 // ===========================================================================>> Third party Library
 import { Op, Sequelize } from 'sequelize';
 // ===========================================================================>> Costom Library
-import OrderDetails from '@models/order/detail.model';
-import Product from '@models/product/product.model';
-import ProductType from '@models/product/type.model';
-import User from '@models/user/user.model';
-import Order from 'src/models/order/order.model';
+import OrderDetails from '@app/models/order/detail.model';
+import Product from '@app/models/product/product.model';
+import ProductType from '@app/models/product/type.model';
+import User from '@app/models/user/user.model';
+import Order from 'src/app/models/order/order.model';
 import { List } from './interface';
 
 @Injectable()

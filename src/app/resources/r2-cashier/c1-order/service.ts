@@ -6,14 +6,14 @@ import { Sequelize, Transaction } from 'sequelize';
 
 // =========================================================================>> Custom Library
 import { NotificationsGateway } from '@app/utils/notification-getway/notifications.gateway';
-import Notifications from '@models/notification/notification.model';
-import User from '@models/user/user.model';
+import Notifications from '@app/models/notification/notification.model';
+import User from '@app/models/user/user.model';
 import { TelegramService } from 'src/app/services/telegram.service';
 import sequelizeConfig from 'src/config/sequelize.config';
-import OrderDetails from 'src/models/order/detail.model';
-import Order from 'src/models/order/order.model';
-import Product from 'src/models/product/product.model';
-import ProductType from 'src/models/product/type.model';
+import OrderDetails from 'src/app/models/order/detail.model';
+import Order from 'src/app/models/order/order.model';
+import Product from 'src/app/models/product/product.model';
+import ProductType from 'src/app/models/product/type.model';
 import { CreateOrderDto } from './dto';
 
 // ======================================= >> Code Starts Here << ========================== //

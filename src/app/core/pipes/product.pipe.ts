@@ -2,7 +2,7 @@
 import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
 // ================================================================>> Costom Library
-import ProductType from 'src/models/product/type.model';
+import ProductType from '@app/models/product/type.model';
 
 @Injectable()
 export class ProductTypeExistsPipe implements PipeTransform {

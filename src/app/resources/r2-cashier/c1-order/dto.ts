@@ -1,5 +1,5 @@
 // =========================================================================>> Custom Library
-import Product from '@models/product/product.model';
+import Product from '@app/models/product/product.model';
 import { IsJSON, IsNotEmpty } from 'class-validator';
 export class CreateOrderDto {
     @IsNotEmpty()

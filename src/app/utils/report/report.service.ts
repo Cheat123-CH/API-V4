@@ -3,11 +3,11 @@ import { BadRequestException, Injectable, RequestTimeoutException } from '@nestj
 // ================================================================>> Custom Library
 import { JsReportService } from '@app/services/js-report.service';
 import { TelegramService } from '@app/services/telegram.service';
-import OrderDetails from '@models/order/detail.model';
-import Order from '@models/order/order.model';
-import Product from '@models/product/product.model';
-import ProductType from '@models/product/type.model';
-import User from '@models/user/user.model';
+import OrderDetails from '@app/models/order/detail.model';
+import Order from '@app/models/order/order.model';
+import Product from '@app/models/product/product.model';
+import ProductType from '@app/models/product/type.model';
+import User from '@app/models/user/user.model';
 import { col, fn, Op } from 'sequelize';
 import { ProductReport } from './interface';
 

@@ -2,8 +2,8 @@
 import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from 'sequelize-typescript';
 
 // ================================================================================================= Custom Library
-import OrderDetails from '@models/order/detail.model';
-import User from '@models/user/user.model';
+import OrderDetails from '@app/models/order/detail.model';
+import User from '@app/models/user/user.model';
 import ProductType from './type.model';
 
 @Table({ tableName: 'product', createdAt: 'created_at', updatedAt: 'updated_at' })

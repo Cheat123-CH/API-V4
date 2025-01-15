@@ -5,12 +5,12 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { literal, Op } from 'sequelize';
 
 // ===========================================================================>> Costom Library
-import OrderDetails from '@models/order/detail.model';
-import Order from '@models/order/order.model';
-import User from '@models/user/user.model';
+import OrderDetails from '@app/models/order/detail.model';
+import Order from '@app/models/order/order.model';
+import User from '@app/models/user/user.model';
 import { FileService } from 'src/app/services/file.service';
-import Product from 'src/models/product/product.model';
-import ProductType from 'src/models/product/type.model';
+import Product from 'src/app/models/product/product.model';
+import ProductType from 'src/app/models/product/type.model';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { List } from './interface';
 
