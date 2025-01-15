@@ -5,8 +5,8 @@ import { BadRequestException, Body, Controller, Get, Post, UploadedFile, UseInte
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { SendFileDto, SendLocationDto, SendMessageDto } from './telegram.dto';
-import { TelegramService } from './telegram.service';
+import { SendFileDto, SendLocationDto, SendMessageDto } from './dto';
+import { TelegramService } from './service';
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()
 export class TelegramController {

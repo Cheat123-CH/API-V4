@@ -2,10 +2,10 @@
 import { Routes } from '@nestjs/core';
 
 // ===========================================================================>> Custom Library
-import { BasicModule } from './basic/basic.module';
-import { SMSModule } from './third-party/sms/sms.module';
-import { TelegramModule } from './third-party/telegram/telegram.module';
-import { ReportJSModule } from './third-party/report/report.module';
+import { BasicModule } from './basic/module';
+import { SMSModule } from './third-party/sms/module';
+import { TelegramModule } from './third-party/telegram/module';
+import { ReportJSModule } from './third-party/report/module';
 
 export const testingRoutes: Routes = [
     {

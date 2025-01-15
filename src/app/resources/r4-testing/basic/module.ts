@@ -1,13 +1,13 @@
 // =========================================================================>> Core Library
 import { Module } from '@nestjs/common';
-import { ReportController } from './report.controller';
-import { ReportService } from './report.service';
 
 // =========================================================================>> Custom Library
+import { BasicController } from './controller';
+import { BasicService } from './service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Module({
-    controllers: [ReportController],
-    providers: [ReportService]
+    controllers: [BasicController],
+    providers: [BasicService]
 })
-export class ReportJSModule { }
+export class BasicModule { }

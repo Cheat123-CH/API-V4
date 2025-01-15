@@ -2,7 +2,7 @@
 import { Body, Controller, Get, Query } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
-import { BasicService } from './basic.service';
+import { BasicService } from './service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()
@@ -12,22 +12,27 @@ export class BasicController {
 
     // ====================================================>> Sum 1
     @Get('sum-1')
-    async sum1(): Promise<{ result: number  }> {
+    sum1(){
 
-        return await this._service.sum1();
+        let a = 10;
+        let b = 6;
+
+        const c = a + b;
+
+        return c; 
 
     }
 
     // ====================================================>> Sum 2
     @Get('sum-2')
-    async sum2(
+    sum2(
 
         @Query('a') a?: number,
         @Query('b') b?: number
     
-    ): Promise<{ result: number  }> {
-
-        return await this._service.sum2(a, b);
+    ){
+        const c = a + b;
+        return c; 
 
     }
 

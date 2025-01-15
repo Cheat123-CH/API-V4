@@ -2,8 +2,8 @@
 import { BadRequestException, Body, Controller, Get, Post } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
-import { GenerateReportDto } from './report.dto';
-import { ReportService } from './report.service';
+import { GenerateReportDto } from './dto';
+import { ReportService } from './service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()

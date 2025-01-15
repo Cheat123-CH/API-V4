@@ -2,12 +2,12 @@
 import { Module } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
-import { SMSController } from './sms.controller';
-import { SMSService } from './sms.service';
+import { BasicController } from './controller';
+import { BasicService } from './service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Module({
-    controllers: [SMSController],
-    providers: [SMSService]
+    controllers: [BasicController],
+    providers: [BasicService]
 })
-export class SMSModule { }
+export class BasicModule { }

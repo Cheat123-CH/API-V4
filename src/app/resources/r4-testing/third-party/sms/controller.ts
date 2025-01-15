@@ -5,8 +5,8 @@ import { BadRequestException, Body, Controller, Post, UploadedFile, UseIntercept
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
-import { SendEmailDto, SendFileDto } from './sms.dto';
-import { SMSService } from './sms.service';
+import { SendEmailDto, SendFileDto } from './dto';
+import { SMSService } from './service';
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()
 export class SMSController {

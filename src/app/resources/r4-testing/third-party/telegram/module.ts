@@ -2,12 +2,12 @@
 import { Module } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
-import { BasicController } from './basic.controller';
-import { BasicService } from './basic.service';
+import { TelegramController } from './controller';
+import { TelegramService } from './service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Module({
-    controllers: [BasicController],
-    providers: [BasicService]
+    controllers: [TelegramController],
+    providers: [TelegramService]
 })
-export class BasicModule { }
+export class TelegramModule { }
