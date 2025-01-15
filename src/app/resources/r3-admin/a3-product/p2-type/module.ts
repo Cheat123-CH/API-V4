@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 
 // ===========================================================================>> Custom Library
 import { FileService } from '@app/services/file.service';
-import { ProductTypeController } from './type.controller';
-import { ProductTypeService } from './type.service';
+import { ProductTypeController } from './controller';
+import { ProductTypeService } from './service';
 
 @Module({
     controllers: [ProductTypeController],

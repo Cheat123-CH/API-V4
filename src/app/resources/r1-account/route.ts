@@ -2,8 +2,8 @@
 import { Routes } from '@nestjs/core';
 
 // ===========================================================================>> Custom Library
-import { AuthModule } from './auth/module';
-import { ProfileModule } from './profile/module';
+import { AuthModule } from './a1-auth/module';
+import { ProfileModule } from './a2-profile/module';
 
 
 export const accountRoutes: Routes = [

@@ -3,10 +3,10 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPip
 
 // ===========================================================================>> Custom Library
 
-import { CreateProductTypeDto, UpdateProductTypeDto } from "./type.dto";
+import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
 
 import ProductType             from "src/models/product/type.model";
-import { ProductTypeService }  from "./type.service";
+import { ProductTypeService }  from "./service";
 
 @Controller()
 export class ProductTypeController {

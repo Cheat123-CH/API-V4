@@ -2,7 +2,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
 // ===========================================================================>> Custom Library
-import { DashboardService } from './dashboard.service';
+import { DashboardService } from './service';
 
 @Controller()
 export class DashboardController {

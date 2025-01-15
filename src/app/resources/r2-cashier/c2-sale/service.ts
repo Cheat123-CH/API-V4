@@ -9,7 +9,7 @@ import Product from '@models/product/product.model';
 import ProductType from '@models/product/type.model';
 import User from '@models/user/users.model';
 import Order from 'src/models/order/order.model';
-import { List } from './sale.types';
+import { List } from './interface';
 
 @Injectable()
 export class SaleService {

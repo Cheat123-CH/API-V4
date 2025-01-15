@@ -7,8 +7,8 @@ import { Module } from '@nestjs/common';
 // Custom Components:
 import { FileService } from 'src/app/services/file.service';// for uploading file
 
-import { ProductController } from './product.controller';
-import { ProductService } from './product.service';
+import { ProductController } from './controller';
+import { ProductService } from './service';
 
 @Module({
     controllers: [

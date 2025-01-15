@@ -14,7 +14,7 @@ import OrderDetails from 'src/models/order/detail.model';
 import Order from 'src/models/order/order.model';
 import Product from 'src/models/product/product.model';
 import ProductType from 'src/models/product/type.model';
-import { CreateOrderDto } from './order.pos.dto';
+import { CreateOrderDto } from './dto';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Injectable()

@@ -4,9 +4,9 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPip
 // ===========================================================================>> Costom Library
 import UserDecorator from "@app/core/decorators/user.decorator";
 import User from "@models/user/users.model";
-import { CreateUserDto, UpdatePasswordDto, UpdateStatusDto, UpdateUserDto } from "./user.dto";
-import { Create, List, Update } from "./user.interface";
-import { UserService } from "./user.service";
+import { CreateUserDto, UpdatePasswordDto, UpdateStatusDto, UpdateUserDto } from "./dto";
+import { Create, List, Update } from "./interface";
+import { UserService } from "./service";
 
 @Controller()
 export class UserController {

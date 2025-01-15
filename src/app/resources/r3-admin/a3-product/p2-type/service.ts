@@ -12,7 +12,7 @@ import { Op, Sequelize } from "sequelize";
 import { FileService } from "@app/services/file.service";
 import Product from "src/models/product/product.model";
 import ProductType from "src/models/product/type.model";
-import { CreateProductTypeDto, UpdateProductTypeDto } from "./type.dto";
+import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
 
 @Injectable()
 export class ProductTypeService {

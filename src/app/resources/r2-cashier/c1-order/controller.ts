@@ -6,8 +6,8 @@ import UserDecorator from '@app/core/decorators/user.decorator';
 import User from '@models/user/users.model';
 import Order from 'src/models/order/order.model';
 import Product from 'src/models/product/product.model';
-import { CreateOrderDto } from './order.pos.dto';
-import { OrderService } from './order.service';
+import { CreateOrderDto } from './dto';
+import { OrderService } from './service';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()

@@ -3,8 +3,8 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 
 // ===========================================================================>> Custom Library
 import { UserMiddleware } from '@app/core/middlewares/user.middleware';
-import { OrderModule } from './order/order.module';
-import { SaleModule } from './sale/sale.module';
+import { OrderModule } from './c1-order/module';
+import { SaleModule } from './c2-sale/module';
 import { DeviceTrackerMiddleware } from '@app/core/middlewares/device-tracker.middleware';
 
 @Module({

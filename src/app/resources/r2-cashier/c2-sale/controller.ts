@@ -1,8 +1,11 @@
 // ===========================================================================>> Core Library
 import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Query } from '@nestjs/common';
 
-// ===========================================================================>> Costom Library
-import { SaleService } from './sale.service';
+// ===========================================================================>> Custom Library
+import UserDecorator from '@app/core/decorators/user.decorator';
+import User from '@models/user/users.model';
+import { SaleService } from './service';
+
 @Controller()
 export class SaleController {
 
@@ -12,13 +15,13 @@ export class SaleController {
     async getUser(){
         return await this._service.getUser();
     }
-    
+
     @Get()
     async getAllSale(
+        @UserDecorator() auth: User,
         @Query('page_size') page_size?: number,
         @Query('page') page?: number,
         @Query('key') key?: string,
-        @Query('cashier') cashier_id?: number,
         @Query('platform') platform?: string,
         @Query('startDate') startDate?: string,
         @Query('endDate') endDate?: string
@@ -29,17 +32,19 @@ export class SaleController {
         if (!page) {
             page = 1;
         }
-        if(platform === null){
-            platform = '';
-        }
 
-        return await this._service.getData(page_size, page, key, cashier_id, platform, startDate, endDate);
+        return await this._service.getData(auth.id, page_size, page, key, platform, startDate, endDate);
     }
-
+    @Get(':id/view')
+    async view(@Param('id') id: number
+        
+    ) {
+        return await this._service.view(id);
+    }
 
     @Delete(':id')
     @HttpCode(HttpStatus.OK)
-    async delete(@Param('id') id: number): Promise<{ message: string }> {
+    async delete(@Param('id') id: number): Promise<{message: string }> {
         return await this._service.delete(id);
     }
 }

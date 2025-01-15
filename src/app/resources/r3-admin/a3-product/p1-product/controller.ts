@@ -6,8 +6,8 @@ import UserDecorator from '@app/core/decorators/user.decorator';
 import { ProductTypeExistsPipe } from '@app/core/pipes/product.pipe';
 import User from '@models/user/users.model';
 import Product from 'src/models/product/product.model';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
-import { ProductService } from './product.service';
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { ProductService } from './service';
 @Controller()
 export class ProductController {
 

@@ -4,11 +4,11 @@ import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/c
 // ============================================================================>> Custom Library
 import { AdminMiddleware } from '@app/core/middlewares/admin.middleware';
 import { DeviceTrackerMiddleware } from '@app/core/middlewares/device-tracker.middleware';
-import { DashboardModule } from './dashbord/dashboard.module';
-import { ProductModule } from './product/product.module';
-import { ProductTypeModule } from './product/type/type.module';
-import { SaleModule } from './sale/sale.module';
-import { UserModule } from './user/user.module';
+import { DashboardModule } from './a1-dashbord/module';
+import { ProductModule } from './a3-product/p1-product/module';
+import { ProductTypeModule } from './a3-product/p2-type/module';
+import { SaleModule } from './a2-sale/module';
+import { UserModule } from './a4-user/module';
 
 // ======================================= >> Code Starts Here << ========================== //
 @Module({

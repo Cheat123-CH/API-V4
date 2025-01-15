@@ -13,8 +13,8 @@ import Role from "@models/user/role.model";
 import UserRoles from "@models/user/user_roles.model";
 import User from "@models/user/users.model";
 import { FileService } from "src/app/services/file.service";
-import { CreateUserDto, UpdatePasswordDto, UpdateStatusDto, UpdateUserDto } from "./user.dto";
-import { Create, List, Update } from "./user.interface";
+import { CreateUserDto, UpdatePasswordDto, UpdateStatusDto, UpdateUserDto } from "./dto";
+import { Create, List, Update } from "./interface";
 
 @Injectable()
 export class UserService {

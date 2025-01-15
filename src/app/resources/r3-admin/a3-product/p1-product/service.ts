@@ -11,8 +11,8 @@ import User from '@models/user/users.model';
 import { FileService } from 'src/app/services/file.service';
 import Product from 'src/models/product/product.model';
 import ProductType from 'src/models/product/type.model';
-import { CreateProductDto, UpdateProductDto } from './product.dto';
-import { List } from './product.stype';
+import { CreateProductDto, UpdateProductDto } from './dto';
+import { List } from './interface';
 
 @Injectable()
 export class ProductService {
