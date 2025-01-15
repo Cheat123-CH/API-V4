@@ -5,8 +5,8 @@ import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req,
 import UserDecorator from '@app/core/decorators/user.decorator';
 import { RoleExistsPipe } from '@app/core/pipes/role.pipe';
 import User from '@models/user/users.model';
-import { LoginRequestDto, LoginRequestOTPDto } from './auth.dto';
-import { AuthService } from './auth.service';
+import { LoginRequestDto, LoginRequestOTPDto } from './dto';
+import { AuthService } from './service';
 
 @Controller()
 export class AuthController {

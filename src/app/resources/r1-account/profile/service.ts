@@ -7,8 +7,8 @@ import { JwtTokenGenerator, TokenGenerator } from '@app/shared/jwt/token';
 import Role from '@models/user/role.model';
 import UsersLogs from '@models/user/users_logs.model';
 import { FileService } from 'src/app/services/file.service';
-import { UpdatePasswordDto, UpdateUserDto } from './profile.dto';
-import { List } from './profile.types';
+import { UpdatePasswordDto, UpdateUserDto } from './dto';
+import { List } from './interface';
 
 @Injectable()
 export class ProfileService {

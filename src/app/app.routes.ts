@@ -2,7 +2,7 @@
 import { Routes } from '@nestjs/core';
 
 // ===========================================================================>> Custom Library
-import { accountRoutes } from './resources/r1-account/account.routes';
+import { accountRoutes } from './resources/r1-account/route';
 import { adminRoutes } from './resources/r3-admin/admin.routes';
 import { cashierRoutes } from './resources/r2-cashier/cashier.routes';
 import { utilsRoutes } from './utils/utils.routes';

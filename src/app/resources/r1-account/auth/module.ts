@@ -3,8 +3,8 @@ import { Module } from '@nestjs/common';
 
 // ===========================================================================>> Costom Library
 import { EmailService } from '@app/services/email.service';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from './controller';
+import { AuthService } from './service';
 
 @Module({
     controllers: [AuthController],

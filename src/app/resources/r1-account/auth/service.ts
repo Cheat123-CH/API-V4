@@ -16,7 +16,7 @@ import UserOTP from '@models/user/user_otps.model';
 import UserRoles from '@models/user/user_roles.model';
 import UsersLogs from '@models/user/users_logs.model';
 import { ActiveEnum } from 'src/app/enums/active.enum';
-import { LoginRequestOTPDto } from './auth.dto';
+import { LoginRequestOTPDto } from './dto';
 
 interface LoginPayload {
     username: string
