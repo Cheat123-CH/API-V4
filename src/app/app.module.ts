@@ -10,9 +10,9 @@ import { appRoutes } from './app.routes';
 import { ExceptionErrorsFilter } from './core/exceptions/errors.filter';
 import { TimeoutInterceptor } from './core/interceptors/timeout.interceptor';
 import { JwtMiddleware } from './core/middlewares/jwt.middleware';
-import { AccountModule } from './resources/account/account.module';
-import { AdminModule } from './resources/admin/admin.module';
-import { CashierModule } from './resources/cashier/cashier.module';
+import { AccountModule } from './resources/r1-account/account.module';
+import { AdminModule } from './resources/r3-admin/admin.module';
+import { CashierModule } from './resources/r2-cashier/cashier.module';
 import { UtilsModule } from './utils/utils.module';
 
 import { BasicModule } from './resources/testing/basic/basic.module';
