@@ -11,7 +11,7 @@ import Product from "@models/product/product.model";
 import ProductType from "@models/product/type.model";
 import Role from "@models/user/role.model";
 import UserRoles from "@models/user/user_roles.model";
-import User from "@models/user/users.model";
+import User from "@models/user/user.model";
 import { FileService } from "src/app/services/file.service";
 import { CreateUserDto, UpdatePasswordDto, UpdateStatusDto, UpdateUserDto } from "./dto";
 import { Create, List, Update } from "./interface";

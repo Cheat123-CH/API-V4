@@ -3,7 +3,7 @@ import { BelongsTo, Column, DataType, ForeignKey, HasMany, Model, Table } from '
 
 // ================================================================================================= Custom Library
 import Notifications from '@models/notification/notification.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import OrderDetails from './detail.model';
 
 @Table({ tableName: 'order', createdAt: 'created_at', updatedAt: 'updated_at' })

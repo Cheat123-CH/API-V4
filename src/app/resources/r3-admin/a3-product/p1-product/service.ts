@@ -7,7 +7,7 @@ import { literal, Op } from 'sequelize';
 // ===========================================================================>> Costom Library
 import OrderDetails from '@models/order/detail.model';
 import Order from '@models/order/order.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import { FileService } from 'src/app/services/file.service';
 import Product from 'src/models/product/product.model';
 import ProductType from 'src/models/product/type.model';

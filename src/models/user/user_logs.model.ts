@@ -1,6 +1,6 @@
 // ================================================================================================= Third Party Library
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-import User from './users.model';
+import User from './user.model';
 
 @Table({ tableName: 'user_log', createdAt: 'created_at', updatedAt: 'updated_at', deletedAt: 'deleted_at', paranoid: true, })
 class UsersLogs extends Model<UsersLogs> {

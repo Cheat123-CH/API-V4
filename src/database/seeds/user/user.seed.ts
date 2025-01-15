@@ -1,7 +1,7 @@
 import { RoleEnum } from "@app/enums/role.enum";
 import Role from "@models/user/role.model";
 import UserRoles from "@models/user/user_roles.model";
-import User from "@models/user/users.model";
+import User from "@models/user/user.model";
 
 export class UserSeeder {
 

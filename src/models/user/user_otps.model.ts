@@ -1,6 +1,6 @@
 // user_otp.model.ts
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-import User from './users.model';
+import User from './user.model';
 
 @Table({ tableName: 'user_otps', timestamps: true })
 export class UserOTP extends Model<UserOTP> {

@@ -8,13 +8,13 @@ import { DatabaseError, Op } from 'sequelize';
 // ===========================================================================>> Costom Library
 // Model
 import Role from '@models/user/role.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 
 import { EmailService } from '@app/services/email.service';
 import { JwtTokenGenerator, TokenGenerator } from '@app/shared/jwt/token';
 import UserOTP from '@models/user/user_otps.model';
 import UserRoles from '@models/user/user_roles.model';
-import UsersLogs from '@models/user/users_logs.model';
+import UsersLogs from '@models/user/user_logs.model';
 import { ActiveEnum } from 'src/app/enums/active.enum';
 import { LoginRequestOTPDto } from './dto';
 

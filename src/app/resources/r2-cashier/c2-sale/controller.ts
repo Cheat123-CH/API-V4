@@ -3,7 +3,7 @@ import { Controller, Delete, Get, HttpCode, HttpStatus, Param, Query } from '@ne
 
 // ===========================================================================>> Custom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import { SaleService } from './service';
 
 @Controller()

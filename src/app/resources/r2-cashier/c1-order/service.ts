@@ -7,7 +7,7 @@ import { Sequelize, Transaction } from 'sequelize';
 // =========================================================================>> Custom Library
 import { NotificationsGateway } from '@app/utils/notification-getway/notifications.gateway';
 import Notifications from '@models/notification/notification.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import { TelegramService } from 'src/app/services/telegram.service';
 import sequelizeConfig from 'src/config/sequelize.config';
 import OrderDetails from 'src/models/order/detail.model';

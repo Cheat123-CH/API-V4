@@ -3,7 +3,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import Order from 'src/models/order/order.model';
 import Product from 'src/models/product/product.model';
 import { CreateOrderDto } from './dto';

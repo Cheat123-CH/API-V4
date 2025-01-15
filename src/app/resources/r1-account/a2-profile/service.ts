@@ -1,11 +1,11 @@
 // ===========================================================================>> Core Library
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import { BadRequestException, Injectable } from '@nestjs/common';
 
 // ===========================================================================>> Costom Library
 import { JwtTokenGenerator, TokenGenerator } from '@app/shared/jwt/token';
 import Role from '@models/user/role.model';
-import UsersLogs from '@models/user/users_logs.model';
+import UsersLogs from '@models/user/user_logs.model';
 import { FileService } from 'src/app/services/file.service';
 import { UpdatePasswordDto, UpdateUserDto } from './dto';
 import { List } from './interface';

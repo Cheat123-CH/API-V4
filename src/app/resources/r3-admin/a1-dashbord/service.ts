@@ -12,7 +12,7 @@ import Product from '@models/product/product.model';
 import ProductType from '@models/product/type.model';
 import Role from '@models/user/role.model';
 import UserRoles from '@models/user/user_roles.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 
 @Injectable()
 export class DashboardService {

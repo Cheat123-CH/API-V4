@@ -1,6 +1,6 @@
 // ===========================================================================>> Costom Library
 import { Pagination } from "@app/shared/pagination.interface";
-import User from "@models/user/users.model";
+import User from "@models/user/user.model";
 export interface List {
     data: User[],
     pagination: Pagination

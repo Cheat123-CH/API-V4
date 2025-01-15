@@ -6,7 +6,7 @@ import { JsReportService } from '@app/services/js-report.service';
 import OrderDetails from '@models/order/detail.model';
 import Order from '@models/order/order.model';
 import Product from '@models/product/product.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 
 @Injectable()
 export class InvoiceService {

@@ -7,7 +7,7 @@ import OrderDetails from '@models/order/detail.model';
 import Order from '@models/order/order.model';
 import Product from '@models/product/product.model';
 import ProductType from '@models/product/type.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import { col, fn, Op } from 'sequelize';
 import { ProductReport } from './interface';
 

@@ -3,7 +3,7 @@ import { BelongsToMany, Column, DataType, HasMany, Model, Table } from 'sequeliz
 
 // ================================================================================================= Custom Library
 import UserRoles from '@models/user/user_roles.model';
-import User from './users.model';
+import User from './user.model';
 
 @Table({ tableName: 'role', timestamps: false })
 class Role extends Model<Role> {

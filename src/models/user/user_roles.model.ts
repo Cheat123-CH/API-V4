@@ -3,7 +3,7 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize
 
 // ================================================================================================= Custom Library
 import Role from '@models/user/role.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 
 @Table({ tableName: 'user_roles', timestamps: false })
 class UserRoles extends Model<UserRoles> {

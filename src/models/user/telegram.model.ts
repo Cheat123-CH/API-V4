@@ -1,6 +1,6 @@
 // ================================================================================================= Third Party Library
 import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-import User from './users.model';
+import User from './user.model';
 
 // ================================================================================================= Custom Library
 

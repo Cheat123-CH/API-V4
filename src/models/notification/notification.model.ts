@@ -3,7 +3,7 @@ import { BelongsTo, Column, DataType, ForeignKey, Model, Table } from 'sequelize
 
 // ================================================================================================= Custom Library
 import Order from '@models/order/order.model';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 
 @Table({ tableName: 'notifications', timestamps: true })
 class Notifications extends Model<Notifications> {

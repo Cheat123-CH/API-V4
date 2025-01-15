@@ -4,7 +4,7 @@ import { BadRequestException, Body, Controller, HttpCode, HttpStatus, Post, Req,
 // ===========================================================================>> Costom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
 import { RoleExistsPipe } from '@app/core/pipes/role.pipe';
-import User from '@models/user/users.model';
+import User from '@models/user/user.model';
 import { LoginRequestDto, LoginRequestOTPDto } from './dto';
 import { AuthService } from './service';
 
