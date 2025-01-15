@@ -15,10 +15,10 @@ import { AdminModule } from './resources/r3-admin/admin.module';
 import { CashierModule } from './resources/r2-cashier/cashier.module';
 import { UtilsModule } from './utils/utils.module';
 
-import { BasicModule } from './resources/testing/basic/basic.module';
-import { ReportJSModule } from './resources/testing/third-party/report/report.module';
-import { SMSModule } from './resources/testing/third-party/sms/sms.module';
-import { TelegramModule } from './resources/testing/third-party/telegram/telegram.module';
+import { BasicModule } from './resources/r4-testing/basic/basic.module';
+import { ReportJSModule } from './resources/r4-testing/third-party/report/report.module';
+import { SMSModule } from './resources/r4-testing/third-party/sms/sms.module';
+import { TelegramModule } from './resources/r4-testing/third-party/telegram/telegram.module';
 
 // ======================== >> Code Starts Here << ========================== //
 @Module({
