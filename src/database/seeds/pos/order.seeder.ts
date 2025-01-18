@@ -32,27 +32,33 @@ export class OrderSeeder {
         for (let i = 1; i <= 100; i++) {
             const receiptNumber = await OrderSeeder.generateReceiptNumber();
             ordersData.push({
-                receipt_number: receiptNumber,
-                cashier_id: Math.floor(Math.random() * (4 - 1) + 1),
-                total_price: 0,
-                ordered_at: new Date(),
+                receipt_number      : receiptNumber+'',
+                cashier_id          : Math.floor(Math.random() * (4 - 1) + 1),
+                total_price         : 0,
+                ordered_at          : new Date(),
             });
         }
 
         try {
+
             await Order.bulkCreate(ordersData);
             console.log('\x1b[32mOrders data inserted successfully.');
+
         } catch (error) {
+
             console.error('Error seeding orders:', error);
             throw error;
+
         }
     }
 
     private static async seedOrderDetails() {
         try {
+
             const orders = await Order.findAll();
 
             for (const order of orders) {
+
                 const orderDetails = await OrderSeeder.createOrderDetails(order.id);
                 const totalPrice = orderDetails.reduce((total, detail) => total + (detail.unit_price || 0) * (detail.qty || 0), 0);
 
@@ -68,8 +74,9 @@ export class OrderSeeder {
     }
 
     private static async createOrderDetails(orderId: number) {
-        const details = [];
-        const nOfDetails = Math.floor(Math.random() * (7 - 2 + 1) + 2);
+
+        const details       = [];
+        const nOfDetails     = Math.floor(Math.random() * (7 - 2 + 1) + 2);
 
         const products = await Product.findAll();
         const productIds = products.map(product => product.id);
@@ -86,10 +93,10 @@ export class OrderSeeder {
             const qty = Math.floor(Math.random() * 10) + 1;
 
             details.push({
-                order_id: orderId,
-                product_id: product.id,
-                unit_price: product.unit_price,
-                qty: qty,
+                order_id    : orderId,
+                product_id  : product.id,
+                unit_price  : product.unit_price,
+                qty         : qty,
             });
         }
 
@@ -98,11 +105,14 @@ export class OrderSeeder {
 
 
     private static async generateReceiptNumber() {
-        const number = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-        const existingOrder = await Order.findOne({ where: { receipt_number: number } });
+
+        const number        = Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+        const existingOrder = await Order.findOne({ where: { receipt_number: number+'' } });
 
         if (existingOrder) {
+
             return this.generateReceiptNumber();
+            
         }
 
         return number;

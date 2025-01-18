@@ -232,17 +232,21 @@ export class OrderService {
     }
 
     // Private method to generate a unique receipt number
-    private async _generateReceiptNumber(): Promise<number> {
+    private async _generateReceiptNumber(): Promise<string> {
+
         const number = Math.floor(Math.random() * 9000000) + 1000000;
+
         return await Order.findOne({
             where: {
-                receipt_number: number,
+                receipt_number: number+'',
             },
         }).then((order) => {
+
             if (order) {
-                return this._generateReceiptNumber();
+                return this._generateReceiptNumber() + '';
             }
-            return number;
+
+            return number + '';
         });
     }
 }

@@ -14,26 +14,53 @@ export class SaleController {
     }
     
     @Get()
-    async getAllSale(
-        @Query('page_size') page_size?: number,
-        @Query('page') page?: number,
-        @Query('key') key?: string,
-        @Query('cashier') cashier_id?: number,
-        @Query('platform') platform?: string,
-        @Query('startDate') startDate?: string,
-        @Query('endDate') endDate?: string
+    async getData(
+
+        //=========================>> Pagination
+        @Query('page')    page?  : number,
+        @Query('limit')   limit? : number,
+
+        //=========================>> Search
+        @Query('key')     key?   : string,
+
+        //=========================>> Sort
+        @Query("sort_by") sort_by?  : string,
+        @Query("order")   order?    : string,
+        
+        //=========================>> Sort
+        @Query('cashier')   cashier?    : number,
+        @Query('platform')  platform?   : string,
+        @Query('from')      from?       : string,      
+        @Query('to')        to?         : string,
+
+
+
+        
     ) {
-        if (!page_size) {
-            page_size = 10;
-        }
-        if (!page) {
-            page = 1;
-        }
-        if(platform === null){
-            platform = '';
+
+       // Set defaul value if not defined. 
+        page    = !page ? 10: page; 
+        limit   = !limit ? 10: limit;
+        key     = key === undefined ? null: key; 
+
+        const fromDate = from ? new Date(from) : null;
+        const toDate   = to   ? new Date(to)   : null;
+
+        const params = { 
+            page, 
+            limit,
+
+            key,
+            cashier,
+            platform,
+
+            sort_by,
+            order
         }
 
-        return await this._service.getData(page_size, page, key, cashier_id, platform, startDate, endDate);
+       
+
+        return await this._service.getData(params);
     }
 
 

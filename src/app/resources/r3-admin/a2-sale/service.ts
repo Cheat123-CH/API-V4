@@ -24,56 +24,67 @@ export class SaleService {
     }
 
     async getData(
-        page_size: number = 10,
-        page: number = 1,
-        key?: string,
-        cashier_id?: number,
-        platform?: string,
-        startDate?: string,
-        endDate?: string
+        params?: {
+            //=========================>> Pagination
+            page?           : number,
+            limit?           : number, 
+
+            //=========================>> Search
+            key?            : string,
+
+            //=========================>> Sort
+            sort_by?         : string,
+            order?           : string,
+
+            //=========================>> Filter
+            cashier?          : number;
+            platform?         : string;
+        }
     ) {
         try {
-            const offset = (page - 1) * page_size;
+            
+            // return params;
+
+            const offset = (params.page - 1) * params.limit;
 
             // Helper function to convert date to Cambodia's timezone (UTC+7)
-            const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
-                const date = new Date(dateString);
-                const utcOffset = 7 * 60; // UTC+7 offset in minutes
-                const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
+            // const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
+            //     const date = new Date(dateString);
+            //     const utcOffset = 7 * 60; // UTC+7 offset in minutes
+            //     const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
 
-                if (isEndOfDay) {
-                    localDate.setHours(23, 59, 59, 999); // End of day
-                } else {
-                    localDate.setHours(0, 0, 0, 0); // Start of day
-                }
-                return localDate;
-            };
+            //     if (isEndOfDay) {
+            //         localDate.setHours(23, 59, 59, 999); // End of day
+            //     } else {
+            //         localDate.setHours(0, 0, 0, 0); // Start of day
+            //     }
+            //     return localDate;
+            // };
 
             // Calculate start and end dates for the filter
-            const start = startDate ? toCambodiaDate(startDate) : null;
-            const end = endDate ? toCambodiaDate(endDate, true) : null;
+            // const start = startDate ? toCambodiaDate(startDate) : null;
+            // const end = endDate ? toCambodiaDate(endDate, true) : null;
 
-            // Build the dynamic `where` clause with filters
-            const where: any = {
-                [Op.and]: [
-                    key
-                        ? Sequelize.where(
-                            Sequelize.literal(`CAST("receipt_number" AS TEXT)`),
-                            { [Op.like]: `%${key}%` }
-                        )
-                        : null,
-                    cashier_id ? { cashier_id: Number(cashier_id) } : null,
-                    platform !== null && platform !== undefined
-                        ? { platform }
-                        : null,
-                    start && end
-                        ? { ordered_at: { [Op.between]: [start, end] } }
-                        : null,
-                ].filter(Boolean), // Remove null or undefined filters
-            };
+            // ===>> Build the dynamic `where` clause with key
+            const where: any = {};
 
+            // ===>> Search by Key
+            if(params?.key  && params.key != ''){
+                where["receipt_number"] = { [Op.like]: `%${params?.key}%` };
+            }
+            // ===>> Filters
+            // By Cashier
+            if (params?.cashier) { 
+                where["cashier_id"] = params.cashier; 
+            }
 
-            const data = await Order.findAll({
+            // By Platform
+            if (params?.platform !== null && params.platform !== undefined && params.platform !== "") { 
+                where["platform"] = params.cashier; 
+            }
+
+            // ===>> Query Data from Database
+            const { rows, count }  = await Order.findAndCountAll({
                 attributes: ['id', 'receipt_number', 'total_price', 'platform', 'ordered_at'],
                 include: [
                     {
@@ -89,29 +100,32 @@ export class SaleService {
                     },
                     { model: User, attributes: ['id', 'avatar', 'name'] },
                 ],
-                where: where,
-                order: [['ordered_at', 'DESC']],
-                limit: page_size,
-                offset,
+                where   : where,
+                order   : [['ordered_at', 'DESC']],
+                limit   : params.limit,
+                offset  : offset,
             });
 
-            const totalCount = await Order.count({ where });
-            const totalPages = Math.ceil(totalCount / page_size);
+            // Calculate total pages
+            const totalPage = Math.ceil(count / params.limit);
 
-            const dataFormat: List = {
-                status: 'success',
-                data: data,
+            return  {
+                status  : 'success',
+                data    : rows,
+
                 pagination: {
-                    page: page,
-                    limit: page_size,
-                    totalPage: totalPages,
-                    total: totalCount,
-                },
+                    page        : params.page,
+                    limit       : params.limit,
+                    totalPage   : totalPage,
+                    total       : count,
+                }
             };
 
-            return dataFormat;
         } catch (error) {
+
+            console.error('admin/sale/getData', error);
             throw new BadRequestException(error.message);
+
         }
     }
 
