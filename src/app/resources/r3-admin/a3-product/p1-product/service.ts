@@ -2,7 +2,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 // ============================================================================>> Third Party Library
-import { literal, Op } from 'sequelize';
+import { col, literal, Op, OrderItem } from 'sequelize';
 
 // ===========================================================================>> Costom Library
 import OrderDetails from '@app/models/order/detail.model';
@@ -13,6 +13,9 @@ import Product from 'src/app/models/product/product.model';
 import ProductType from 'src/app/models/product/type.model';
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { List } from './interface';
+import { Fn, Col, Literal } from 'sequelize/types/utils';
+import { of } from 'rxjs';
+export type Orders = Fn | Col | Literal | OrderItem[];
 
 @Injectable()
 export class ProductService {
@@ -20,44 +23,55 @@ export class ProductService {
     constructor(private readonly fileService: FileService) { };
 
     // Method to retrieve the setup data for product types
-    async setup() {
+    async getSetupData():Promise<any> {
         // Fetch product types
-        const productTypes = await ProductType.findAll({
-            attributes: ['id', 'name'],
-        });
+       try {
+            const productTypes = await ProductType.findAll({
+                attributes: ['id', 'name'],
+            });
 
-        // Fetch users
-        const users = await User.findAll({
-            attributes: ['id', 'name'],
-        });
+            // Fetch users
+            const users = await User.findAll({
+                attributes: ['id', 'name'],
+            });
         return {
             data: {
                 productTypes,
                 users,
             },
         };
+       } catch (error) {
+           console.error('Error in setup method:', error); // Log the error for debugging
+           return {
+               status: 'error',
+               message: 'products/setup',
+           };
+        
+       }
     }
 
     async getData(
-        page_size   : number = 10,
-        page        : number = 1,
-        key?        : string,
-        type_id?    : number,
-        creator_id? : number,
-        startDate?  : string,
-        endDate?    : string
+        params?: {
+            page: number;
+            limit: number;
+            key?: string;
+            type_id?: number;
+            creator_id?: number;
+            startDate?: string;
+            endDate?: string;
+            sort_by?: string;
+            order?: string;
+        }
     ) {
-
         try {
-
-            
-
+            // Calculate offset for pagination
+            const offset = (params?.page - 1) * params?.limit;
+    
             const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
-
-                const date      = new Date(dateString);
+                const date = new Date(dateString);
                 const utcOffset = 7 * 60; // UTC+7 offset in minutes
                 const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
-
+    
                 if (isEndOfDay) {
                     localDate.setHours(23, 59, 59, 999); // End of day
                 } else {
@@ -65,31 +79,48 @@ export class ProductService {
                 }
                 return localDate;
             };
-
+    
             // Calculate start and end dates for the filter
-            const start     = startDate ? toCambodiaDate(startDate) : null;
-            const end       = endDate ? toCambodiaDate(endDate, true) : null;
-            const offset    = (page - 1) * page_size;
-
-            // Define the WHERE condition based on provided parameters
+            const start = params?.startDate ? toCambodiaDate(params.startDate) : null;
+            const end = params?.endDate ? toCambodiaDate(params.endDate, true) : null;
+    
+            // Construct the `where` clause
             const where: any = {
-                [Op.and]: [
-                    key
-                        ? {
-                            [Op.or]: [
-                                { code: { [Op.iLike]: `%${key}%` } },
-                                { name: { [Op.iLike]: `%${key}%` } },
-                            ],
-                        }
-                        : {},
-                    type_id ? { type_id: Number(type_id) } : {},
-                    creator_id ? { creator_id: Number(creator_id) } : {},
-                    start && end ? { created_at: { [Op.between]: [start, end] } } : {},
-                ],
+                ...(params?.key
+                    ? {
+                          [Op.or]: [
+                              { code: { [Op.iLike]: `%${params?.key}%` } },
+                              { name: { [Op.iLike]: `%${params?.key}%` } },
+                          ],
+                      }
+                    : {}),
+                ...(params.type_id ? { type_id: Number(params.type_id) } : {}),
+                ...(params.creator_id ? { creator_id: Number(params.creator_id) } : {}),
+                ...(start && end ? { created_at: { [Op.between]: [start, end] } } : {}),
             };
-
+    
+            const sortFieldProcessed = params?.sort_by || 'id'; // Default sorting by 'id'
+            const sortOrderProcessed = ['ASC', 'DESC'].includes((params?.order || 'DESC').toUpperCase())
+                ? params?.order.toUpperCase()
+                : 'DESC';
+    
+            const sort: Orders = [];
+            let additionalWhere: any = {};
+    
+            switch (sortFieldProcessed) {
+                case 'type_id':
+                    sort.push([col('type_id'), sortOrderProcessed]);
+                    break;
+                case 'name':
+                    sort.push([col('name'), sortOrderProcessed]);
+                    break;
+                default:
+                    sort.push([sortFieldProcessed, sortOrderProcessed]);
+                    break;
+            }
+    
             // Retrieve products with associated product types and users
-            const data = await Product.findAll({
+            const { rows, count } = await Product.findAndCountAll({
                 attributes: [
                     'id',
                     'code',
@@ -106,7 +137,6 @@ export class ProductService {
                         'total_sale',
                     ],
                 ],
-                where,
                 include: [
                     {
                         model: ProductType,
@@ -122,35 +152,40 @@ export class ProductService {
                         attributes: ['id', 'name', 'avatar'],
                     },
                 ],
-                order: [['id', 'DESC']],
-                limit: page_size,
-                offset,
+                where: { ...where, ...additionalWhere },
+                distinct: true, //  unique rows are counted
+                offset: offset,
+                order: sort,
+                limit: params?.limit,
             });
-
-            // Calculate the total count for pagination
-            const totalCount = await Product.count({ where });
-
+    
             // Calculate the total pages based on the total count
-            const totalPages = Math.ceil(totalCount / page_size);
-
+            const totalPages = Math.ceil(count / params?.limit);
+            // console.log('totalPages', totalPages);
+            // console.log('count', count);
+    
             // Format the response data
             const dataFormat: List = {
                 status: 'success',
-                data,
+                data: rows,
                 pagination: {
-                    currentPage: page,
-                    perPage: page_size,
-                    totalPages,
-                    totalItems: totalCount,
+                    page: params?.page,
+                    limit: params?.limit,
+                    totalPage: totalPages,
+                    total: count,
                 },
             };
-
+    
             return dataFormat;
         } catch (error) {
             console.error('Error in listing method:', error); // Log the error for debugging
-            throw new Error('Internal server error');
+            return {
+                status: 'error',
+                message: 'products/getData',
+            };
         }
     }
+    
 
     async view(product_id: number) {
         const where: any = {
