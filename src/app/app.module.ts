@@ -20,6 +20,7 @@ import { ReportJSModule } from './resources/r4-testing/third-party/report/module
 import { SMSModule } from './resources/r4-testing/third-party/sms/module';
 import { TelegramModule } from './resources/r4-testing/third-party/telegram/module';
 
+
 // ======================== >> Code Starts Here << ========================== //
 @Module({
     controllers: [
@@ -48,7 +49,7 @@ import { TelegramModule } from './resources/r4-testing/third-party/telegram/modu
         ReportJSModule,
 
         //===================== END OF ROLE USER
-        RouterModule.register(appRoutes),
+        RouterModule.register(appRoutes)
     ],
     providers: [
         {
