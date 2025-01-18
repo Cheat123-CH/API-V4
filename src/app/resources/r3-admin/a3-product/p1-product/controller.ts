@@ -13,29 +13,35 @@ export class ProductController {
 
     constructor(private _service: ProductService) { };
 
-    @Get('setup')
-    async setup(){
-        return await this._service.setup();
+    @Get('setup-data')
+    async setup() {
+        return await this._service.getSetupData();
     }
 
     @Get('/')
     async getData(
-        @Query('page_size') page_size?  : number,
-        @Query('page') page?            : number,
-        @Query('key') key?              : string,
-        @Query('type_id') type_id?      : number,
-        @Query('creator_id') creator_id?: number,
-        @Query('startDate') startDate?  : string,
-        @Query('endDate') endDate?      : string
+        
+        @Query('page')              page?       : number,
+        @Query('limit')             limit?      : number,
+        @Query('key')               key?        : string,
+        @Query('type_id')           type_id?    : number,
+        @Query('creator_id')        creator_id? : number,
+        @Query('startDate')         startDate?  : string,
+        @Query('endDate')           endDate?    : string,
+        @Query('sort_by')           sort_by?    : string,
+        @Query('order')             order?      : string
     ) {
-        if (!page_size) {
-            page_size = 10;
-        }
-        if (!page) {
-            page = 1;
+
+        // Set defaul value if not defined. 
+        page = !page   ?   10   : page;
+        limit = !limit ?   10   : limit;
+        key = key === undefined ? null : key;
+
+        const params = {
+            page,limit, key, type_id, creator_id, startDate, endDate, sort_by, order,
         }
 
-        return await this._service.getData(page_size, page, key, type_id, creator_id, startDate, endDate);
+        return await this._service.getData(params);
     }
 
     @Get('/:id')

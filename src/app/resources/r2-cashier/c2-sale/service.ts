@@ -103,10 +103,10 @@ export class SaleService {
                 status: 'success',
                 data: data,
                 pagination: {
-                    currentPage: page,
-                    perPage: page_size,
-                    totalPages: totalPages,
-                    totalItems: totalCount,
+                    page: page,
+                    limit: page_size,
+                    totalPage: totalPages,
+                    total: totalCount,
                 },
             };
 

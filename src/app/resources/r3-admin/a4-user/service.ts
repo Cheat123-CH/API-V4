@@ -119,10 +119,10 @@ export class UserService {
         const dataFormat: List = {
             data,
             pagination: {
-                currentPage: page,
-                perPage: page_size,
-                totalPages,
-                totalItems: totalCount,
+                page: page,
+                limit: page_size,
+                totalPage: totalPages,
+                total: totalCount,
             },
         };
 
