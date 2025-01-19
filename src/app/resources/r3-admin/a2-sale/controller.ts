@@ -9,11 +9,11 @@ export class SaleController {
     constructor(private readonly _service: SaleService) { };
 
     @Get('/setup')
-    async getUser(){
-        return await this._service.getUser();
+    async getSetupData(){
+        return await this._service.getSetupData();
     }
     
-    @Get()
+    @Get('/')
     async getData(
 
         //=========================>> Pagination
@@ -24,8 +24,8 @@ export class SaleController {
         @Query('key')     key?   : string,
 
         //=========================>> Sort
-        @Query("sort_by") sort_by?  : string,
-        @Query("order")   order?    : string,
+        @Query("sort")      sort?  : string,
+        @Query("order")     order?    : string,
         
         //=========================>> Filter
         @Query('cashier')   cashier?    : number,
@@ -38,7 +38,7 @@ export class SaleController {
        // Set defaul value if not defined. 
         page    = !page ? 10: page; 
         limit   = !limit ? 10: limit;
-        key     = key === undefined ? null: key; 
+        // key     = key === undefined ? null: key; 
 
         // const fromDate  = from ? new Date(from) : undefined;
         // const toDate    = to ? new Date(to) : undefined;
@@ -59,15 +59,15 @@ export class SaleController {
             toDate,
 
             // ===>> Sort
-            sort_by,
+            sort,
             order
         }
 
+        // return params; 
         
         return await this._service.getData(params);
     }
-
-
+    
     @Delete(':id')
     @HttpCode(HttpStatus.OK)
     async delete(@Param('id') id: number): Promise<{ message: string }> {

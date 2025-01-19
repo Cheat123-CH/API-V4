@@ -32,6 +32,7 @@ class SeederInitializer {
     }
 
     private async seedData() {
+        
         //===================== user data
         await UserSeeder.seed();
         //===================== pos data

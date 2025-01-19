@@ -2,25 +2,41 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 
 // ===========================================================================>> Third party Library
-import { Op, Sequelize } from 'sequelize';
+import { Op, Order as SeqOrder, col, Sequelize } from 'sequelize';
 // ===========================================================================>> Costom Library
+
+import User         from '@app/models/user/user.model';
+import Order        from 'src/app/models/order/order.model';
 import OrderDetails from '@app/models/order/detail.model';
-import Product from '@app/models/product/product.model';
-import ProductType from '@app/models/product/type.model';
-import User from '@app/models/user/user.model';
-import Order from 'src/app/models/order/order.model';
+import Product      from '@app/models/product/product.model';
+import ProductType  from '@app/models/product/type.model';
+
 import { List } from './interface';
 
 @Injectable()
 export class SaleService {
 
+    public shortItems = [
+        {
+            key     : 'ordered_at', 
+            value   : 'ថ្ងៃបញ្ជាទិញ'
+        },
+        {
+            key     : 'total_price', 
+            value   : 'តម្លៃលក់'
+        }
+    ];
 
-    async getUser() {
-        const data = await User.findAll({
+    async getSetupData() {
+        const cashiers = await User.findAll({
             attributes: ['id', 'name']
-        })
+        }); 
 
-        return { data: data };
+        
+        return { 
+            cashiers    : cashiers,
+            shortItems  : this.shortItems
+        };
     }
 
     async getData(
@@ -33,7 +49,7 @@ export class SaleService {
             key?            : string,
 
             //=========================>> Sort
-            sort_by?         : string,
+            sort?           : string,
             order?           : string,
 
             //=========================>> Filter
@@ -45,8 +61,8 @@ export class SaleService {
         }
     ) {
         try {
-            
             // return params; 
+
             // ===>> Calculate Pagination Page
             const offset = (params.page - 1) * params.limit;
 
@@ -72,12 +88,29 @@ export class SaleService {
             // By Date Range
             if(params?.fromDate && params?.toDate ){
 
-                where.created_at = { [Op.gte]: params?.fromDate };
+                where.created_at = { [Op.gte]: params?.fromDate }; // gte: greater than
                 where.created_at = { 
                     ... where.created_at,
-                    [Op.lte]: params?.toDate 
+                    [Op.lte]: params?.toDate // lte: lower than
                 };
             }
+
+            // ===>> Build Sort & Order
+            const order     = [];
+            // check if the params?.order is in the shortItems. 
+            if(params?.order){
+                this.shortItems.forEach(e =>{
+                    if(e.key == params?.order){
+                        order.push([ col(params?.order), params?.sort ]); 
+                    }
+                }); 
+            }
+
+            // Default order
+            order.push([ col('id'), 'DESC' ]); 
+            
+            
+            
 
             // ===>> Query Data from Database
             const { rows, count }  = await Order.findAndCountAll({
@@ -90,24 +123,33 @@ export class SaleService {
                             {
                                 model: Product,
                                 attributes: ['id', 'name', 'code', 'image'],
-                                include: [{ model: ProductType, attributes: ['name'] }],
+                                include: [
+                                    {   model: ProductType, 
+                                        attributes: ['name'] 
+                                    }
+                                ],
                             },
                         ],
                     },
-                    { model: User, attributes: ['id', 'avatar', 'name'] },
+                    { 
+                        model: User, 
+                        attributes: ['id', 'avatar', 'name'] 
+                    },
                 ],
-                where   : where,
-                order   : [['ordered_at', 'DESC']],
-                limit   : params.limit,
-                offset  : offset,
+
+                where       : where,
+                distinct    : true,
+                order       : order,
+                limit       : params.limit,
+                offset      : offset,
             });
 
             // Calculate total pages
             const totalPage = Math.ceil(count / params.limit);
 
             return  {
-                params: params,
-                status  : 'success',
+                // params: params,
+                // status  : 'success',
                 data    : rows,
 
                 pagination: {
