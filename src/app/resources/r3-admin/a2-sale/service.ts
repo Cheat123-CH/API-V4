@@ -109,9 +109,6 @@ export class SaleService {
 
             // Default order
             order.push([ col('id'), 'DESC' ]); 
-            
-            
-            
 
             // ===>> Query Data from Database
             const { rows, count }  = await Order.findAndCountAll({
