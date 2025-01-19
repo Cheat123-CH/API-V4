@@ -116,27 +116,27 @@ export class SaleService {
             // ===>> Query Data from Database
             const { rows, count }  = await Order.findAndCountAll({
                 attributes: ['id', 'receipt_number', 'total_price', 'platform', 'ordered_at'],
-                // include: [
-                //     {
-                //         model: OrderDetails,
-                //         attributes: ['id', 'unit_price', 'qty'],
-                //         include: [
-                //             {
-                //                 model: Product,
-                //                 attributes: ['id', 'name', 'code', 'image'],
-                //                 include: [
-                //                     {   model: ProductType, 
-                //                         attributes: ['name'] 
-                //                     }
-                //                 ],
-                //             },
-                //         ],
-                //     },
-                //     { 
-                //         model: User, 
-                //         attributes: ['id', 'avatar', 'name'] 
-                //     },
-                // ],
+                include: [
+                    {
+                        model: OrderDetails,
+                        attributes: ['id', 'unit_price', 'qty'],
+                        include: [
+                            {
+                                model: Product,
+                                attributes: ['id', 'name', 'code', 'image'],
+                                include: [
+                                    {   model: ProductType, 
+                                        attributes: ['name'] 
+                                    }
+                                ],
+                            },
+                        ],
+                    },
+                    { 
+                        model: User, 
+                        attributes: ['id', 'avatar', 'name'] 
+                    },
+                ],
 
                 where       : where,
                 distinct    : true,
