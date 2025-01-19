@@ -6,12 +6,10 @@ import { Op, Order as SeqOrder, col, Sequelize } from 'sequelize';
 // ===========================================================================>> Costom Library
 
 import User         from '@app/models/user/user.model';
-import Order        from 'src/app/models/order/order.model';
+import Order        from '@app/models/order/order.model';
 import OrderDetails from '@app/models/order/detail.model';
 import Product      from '@app/models/product/product.model';
 import ProductType  from '@app/models/product/type.model';
-
-import { List } from './interface';
 
 @Injectable()
 export class SaleService {
@@ -60,6 +58,7 @@ export class SaleService {
             toDate?               : string;
         }
     ) {
+
         try {
             // return params; 
 
@@ -97,6 +96,7 @@ export class SaleService {
 
             // ===>> Build Sort & Order
             const order     = [];
+            
             // check if the params?.order is in the shortItems. 
             if(params?.order){
                 this.shortItems.forEach(e =>{
