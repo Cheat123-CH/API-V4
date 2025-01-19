@@ -25,15 +25,27 @@ export class SaleService {
         }
     ];
 
+    public platform = [
+        {
+            key         : 'web', 
+            display     : 'Web'
+        },
+        {
+            key         : 'mobile', 
+            display     : 'Mobile'
+        }
+    ];
+
     async getSetupData() {
         const cashiers = await User.findAll({
-            attributes: ['id', 'name']
+            attributes: ['id', 'name'],
         }); 
 
         
         return { 
             cashiers    : cashiers,
-            shortItems  : this.shortItems
+            shortItems  : this.shortItems,
+            platform    : this.platform
         };
     }
 
@@ -41,21 +53,21 @@ export class SaleService {
         params?: {
             //=========================>> Pagination
             page?           : number,
-            limit?           : number, 
+            limit?          : number, 
 
             //=========================>> Search
             key?            : string,
 
             //=========================>> Sort
             sort?           : string,
-            order?           : string,
+            order?          : string,
 
             //=========================>> Filter
-            cashier?          : number;
-            platform?         : string;
+            cashier?        : number;
+            platform?       : string;
 
-            fromDate?             : string;
-            toDate?               : string;
+            fromDate?       : string;
+            toDate?         : string;
         }
     ) {
 
@@ -85,12 +97,13 @@ export class SaleService {
             }
 
             // By Date Range
-            if(params?.fromDate && params?.toDate ){
+            if(params?.fromDate && params?.toDate && params.toDate !== "undefined 23:59:59"){
+                const fromDate = new Date(params.fromDate);
+                const toDate = new Date(params.toDate);
+                toDate.setHours(23, 59, 59, 999); // Set to the end of the day
 
-                where.created_at = { [Op.gte]: params?.fromDate }; // gte: greater than
-                where.created_at = { 
-                    ... where.created_at,
-                    [Op.lte]: params?.toDate // lte: lower than
+                where.ordered_at = { 
+                    [Op.between]: [fromDate, toDate]
                 };
             }
 
@@ -147,7 +160,6 @@ export class SaleService {
 
             return  {
                 params: params,
-                // status  : 'success',
                 data    : rows,
 
                 pagination: {

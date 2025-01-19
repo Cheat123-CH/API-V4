@@ -35,10 +35,8 @@ export class ProductService {
                 attributes: ['id', 'name'],
             });
         return {
-            data: {
-                productTypes,
-                users,
-            },
+            productTypes,
+            users,
         };
        } catch (error) {
            console.error('Error in setup method:', error); // Log the error for debugging
@@ -55,8 +53,8 @@ export class ProductService {
             page: number;
             limit: number;
             key?: string;
-            type_id?: number;
-            creator_id?: number;
+            type?: number;
+            creator?: number;
             startDate?: string;
             endDate?: string;
             sort_by?: string;
@@ -94,10 +92,20 @@ export class ProductService {
                           ],
                       }
                     : {}),
-                ...(params.type_id ? { type_id: Number(params.type_id) } : {}),
-                ...(params.creator_id ? { creator_id: Number(params.creator_id) } : {}),
+                ...(params.type ? { type_id: Number(params.type) } : {}),
+                ...(params.creator ? { creator_id: Number(params.creator) } : {}),
                 ...(start && end ? { created_at: { [Op.between]: [start, end] } } : {}),
             };
+
+
+            if(params?.type){
+                where["type_id"] = params.type;
+            }
+
+            
+            if(params?.creator){
+                where["creator_id"] = params.creator;
+            }
     
             const sortFieldProcessed = params?.sort_by || 'id'; // Default sorting by 'id'
             const sortOrderProcessed = ['ASC', 'DESC'].includes((params?.order || 'DESC').toUpperCase())
@@ -108,11 +116,17 @@ export class ProductService {
             let additionalWhere: any = {};
     
             switch (sortFieldProcessed) {
-                case 'type_id':
-                    sort.push([col('type_id'), sortOrderProcessed]);
-                    break;
+                // case 'type_id':
+                //     sort.push([col('type_id'), sortOrderProcessed]);
+                //     break;
                 case 'name':
                     sort.push([col('name'), sortOrderProcessed]);
+                    break;
+                case 'unit_price':
+                    sort.push([col('unit_price'), sortOrderProcessed]);
+                    break;
+                case 'total_sale':
+                    sort.push([literal('"total_sale"'), sortOrderProcessed]);
                     break;
                 default:
                     sort.push([sortFieldProcessed, sortOrderProcessed]);

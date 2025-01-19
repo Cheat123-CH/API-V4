@@ -24,8 +24,8 @@ export class ProductController {
         @Query('page')              page?       : number,
         @Query('limit')             limit?      : number,
         @Query('key')               key?        : string,
-        @Query('type_id')           type_id?    : number,
-        @Query('creator_id')        creator_id? : number,
+        @Query('type')              type?       : number,
+        @Query('creator')           creator?    : number,
         @Query('startDate')         startDate?  : string,
         @Query('endDate')           endDate?    : string,
         @Query('sort_by')           sort_by?    : string,
@@ -38,7 +38,7 @@ export class ProductController {
         key = key === undefined ? null : key;
 
         const params = {
-            page,limit, key, type_id, creator_id, startDate, endDate, sort_by, order,
+            page,limit, key, type, creator, startDate, endDate, sort_by, order,
         }
 
         return await this._service.getData(params);
