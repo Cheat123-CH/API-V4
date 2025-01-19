@@ -18,12 +18,12 @@ export class SaleService {
 
     public shortItems = [
         {
-            key     : 'ordered_at', 
-            value   : 'ថ្ងៃបញ្ជាទិញ'
+            key         : 'ordered_at', 
+            display     : 'ថ្ងៃបញ្ជាទិញ'
         },
         {
-            key     : 'total_price', 
-            value   : 'តម្លៃលក់'
+            key         : 'total_price', 
+            display     : 'តម្លៃលក់'
         }
     ];
 
@@ -100,9 +100,10 @@ export class SaleService {
             // check if the params?.order is in the shortItems. 
             if(params?.order){
                 this.shortItems.forEach(e =>{
-                    if(e.key == params?.order){
-                        order.push([ col(params?.order), params?.sort ]); 
+                    if(e.key == params?.sort){
+                        order.push([ col(params?.sort), params?.order ]); 
                     }
+                    
                 }); 
             }
 
@@ -115,27 +116,27 @@ export class SaleService {
             // ===>> Query Data from Database
             const { rows, count }  = await Order.findAndCountAll({
                 attributes: ['id', 'receipt_number', 'total_price', 'platform', 'ordered_at'],
-                include: [
-                    {
-                        model: OrderDetails,
-                        attributes: ['id', 'unit_price', 'qty'],
-                        include: [
-                            {
-                                model: Product,
-                                attributes: ['id', 'name', 'code', 'image'],
-                                include: [
-                                    {   model: ProductType, 
-                                        attributes: ['name'] 
-                                    }
-                                ],
-                            },
-                        ],
-                    },
-                    { 
-                        model: User, 
-                        attributes: ['id', 'avatar', 'name'] 
-                    },
-                ],
+                // include: [
+                //     {
+                //         model: OrderDetails,
+                //         attributes: ['id', 'unit_price', 'qty'],
+                //         include: [
+                //             {
+                //                 model: Product,
+                //                 attributes: ['id', 'name', 'code', 'image'],
+                //                 include: [
+                //                     {   model: ProductType, 
+                //                         attributes: ['name'] 
+                //                     }
+                //                 ],
+                //             },
+                //         ],
+                //     },
+                //     { 
+                //         model: User, 
+                //         attributes: ['id', 'avatar', 'name'] 
+                //     },
+                // ],
 
                 where       : where,
                 distinct    : true,
@@ -148,7 +149,7 @@ export class SaleService {
             const totalPage = Math.ceil(count / params.limit);
 
             return  {
-                // params: params,
+                params: params,
                 // status  : 'success',
                 data    : rows,
 
