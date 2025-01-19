@@ -10,8 +10,8 @@
         "start": "nest start",
         "start:dev": "nest start --watch",
         "start:prod": "node dist/main",
-        "migrate": "ts-node -r tsconfig-paths/register src/database/migrate",
-        "seeder": "ts-node -r tsconfig-paths/register src/database/seed",
+        "migrate": "ts-node -r tsconfig-paths/register src/database/migrate.ts",
+        "seeder": "ts-node -r tsconfig-paths/register src/database/seed.ts",
         "start:debug": "nest start --debug --watch"
     },
     "dependencies": {
