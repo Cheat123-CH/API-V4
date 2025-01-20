@@ -15,25 +15,15 @@ import ProductType  from '@app/models/product/type.model';
 export class SaleService {
 
     public shortItems = [
+        
         {
-            key         : 'ordered_at', 
-            display     : 'ថ្ងៃបញ្ជាទិញ'
-        },
-        {
-            key         : 'total_price', 
-            display     : 'តម្លៃលក់'
+            value    : 'total_price', 
+            name     : 'តម្លៃលក់'
         }
-    ];
-
-    public platform = [
-        {
-            key         : 'web', 
-            display     : 'Web'
+        ,{
+            value    : 'ordered_at', 
+            name     : 'ថ្ងៃបញ្ជាទិញ'
         },
-        {
-            key         : 'mobile', 
-            display     : 'Mobile'
-        }
     ];
 
     async getSetupData() {
@@ -45,7 +35,7 @@ export class SaleService {
         return { 
             cashiers    : cashiers,
             shortItems  : this.shortItems,
-            platform    : this.platform
+            // platform    : this.platform
         };
     }
 
@@ -113,7 +103,7 @@ export class SaleService {
             // check if the params?.order is in the shortItems. 
             if(params?.order){
                 this.shortItems.forEach(e =>{
-                    if(e.key == params?.sort){
+                    if(e.value == params?.sort){
                         order.push([ col(params?.sort), params?.order ]); 
                     }
                     
