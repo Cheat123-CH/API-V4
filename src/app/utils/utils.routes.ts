@@ -5,7 +5,8 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { Routes } from '@nestjs/core';
 import { NotificationGetwayModule } from './notification-getway/notifications.gateway.module';
 import { NotificationModule } from './notification/notification.module';
-import { ReportModule } from './report/report.module';
+import { ReportModule } from './report/module';
+
 
 export const utilsRoutes: Routes = [
     {

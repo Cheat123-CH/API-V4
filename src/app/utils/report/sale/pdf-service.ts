@@ -1,26 +1,24 @@
-// ================================================================>> Core Library
-import { BadRequestException, Injectable, RequestTimeoutException } from '@nestjs/common';
-// ================================================================>> Custom Library
-import { JsReportService } from '@app/services/js-report.service';
-import { TelegramService } from '@app/services/telegram.service';
-import OrderDetails from '@app/models/order/detail.model';
-import Order from '@app/models/order/order.model';
-import Product from '@app/models/product/product.model';
-import ProductType from '@app/models/product/type.model';
-import User from '@app/models/user/user.model';
-import { col, fn, Op } from 'sequelize';
-import { ProductReport } from './interface';
+// ===> core library
+import { Op, fn, col } from "sequelize";
+import { BadRequestException, Injectable, RequestTimeoutException } from "@nestjs/common";
+
+// ===> custom library
+import OrderDetails from "@app/models/order/detail.model";
+import Order        from "@app/models/order/order.model";
+import User         from "@app/models/user/user.model";
+
+// ===> third party library
+import { JsReportService } from "@app/services/js-report.service";
 
 @Injectable()
-export class ReportService {
+export class SalePDFReportService {
+
     constructor(
         private readonly jsReportService: JsReportService,
-        private readonly telegramService: TelegramService
     ) { }
 
-    // =============================>> Public Methods
-
-    async generateSaleReportBaseOnStartDateAndEndDate(
+    // ===> Method to generate sale report
+    async generate(
         startDate: string,
         endDate: string,
         userId: number
@@ -40,55 +38,14 @@ export class ReportService {
         return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_POS, 'Sale Report', 'របាយការណ៍លក់រាយ');
     }
 
-    async generateCashierReportBaseOnStartDateAndEndDate(
-        startDate: string,
-        endDate: string,
-        userId: number
-    ) {
-        const { start, end } = this.getStartAndEndDateInCambodia(
-            startDate || this.getCurrentDate(),
-            endDate || this.getCurrentDate()
-        );
-        const user = await this.fetchUser(userId);
-        const cashiers = await this.fetchCashierSales(start, end);
+     // =============================>> Private Helper Methods
 
-        const totalOrders = this.calculateTotal(cashiers, 'totalOrders');
-        const totalSales = this.calculateTotal(cashiers, 'totalSales');
-
-        const reportData = this.buildReportData(user, totalSales, cashiers, start, end, totalOrders);
-
-        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_CASHIER, 'Cashier Sales Report', 'របាយការណ៍លក់តាមអ្នកគិតប្រាក់');
-    }
-
-    async generateProductReportBaseOnStartDateAndEndDate(
-        startDate: string,
-        endDate: string,
-        userId: number
-    ) {
-        const { start, end } = this.getStartAndEndDateInCambodia(
-            startDate || this.getCurrentDate(),
-            endDate || this.getCurrentDate()
-        );
-        const user = await this.fetchUser(userId);
-        const products = await this.fetchProducts(start, end);
-
-        const productData = this.processProductData(products);
-        const totalSales = this.calculateTotal(productData, 'total_sales');
-        const totalQty = this.calculateTotal(productData, 'total_qty');
-
-        const reportData = this.buildReportData(user, totalSales, productData, start, end, totalQty);
-
-        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_PRODUCT, 'Product Sales Report', 'របាយការណ៍លក់តាមផលិតផល');
-    }
-
-    // =============================>> Private Helper Methods
-
-    private async fetchUser(userId: number) {
+     private async fetchUser(userId: number) {
         const user = await User.findByPk(userId);
         if (!user) throw new BadRequestException('User not found.');
         return user;
     }
-
+    // ===> Method to fetch orders
     private async fetchOrders(startDate: Date, endDate: Date) {
         return Order.findAll({
             where: { ordered_at: { [Op.between]: [startDate, endDate] } },
@@ -98,51 +55,6 @@ export class ReportService {
                 { model: User, attributes: ['id', 'avatar', 'name'] },
             ],
             order: [['id', 'ASC']],
-        });
-    }
-
-    private async fetchCashierSales(startDate: Date, endDate: Date) {
-        return User.findAll({
-            attributes: [
-                'id', 'name', 'phone',
-                [fn('COUNT', col('orders.id')), 'totalOrders'],
-                [fn('SUM', col('orders.total_price')), 'totalSales'],
-            ],
-            include: [
-                { model: Order, as: 'orders', attributes: [], where: { ordered_at: { [Op.between]: [startDate, endDate] } } }
-            ],
-            group: ['User.id'],
-            raw: true,
-        });
-    }
-
-    private async fetchProducts(startDate: Date, endDate: Date) {
-        return Product.findAll({
-            attributes: ['id', 'name', 'unit_price'],
-            include: [
-                { model: ProductType, as: 'type', attributes: ['id', 'name'] },
-                {
-                    model: OrderDetails, as: 'pod',
-                    where: { created_at: { [Op.between]: [startDate, endDate] } },
-                    attributes: ['id', 'product_id', 'qty', 'unit_price', 'created_at']
-                }
-            ],
-        });
-    }
-
-    private processProductData(products: Product[]): ProductReport[] {
-        return products.map(product => {
-            const totalQty = product.pod.reduce((sum, detail) => sum + detail.qty, 0);
-            const totalSales = totalQty * product.unit_price;
-
-            return {
-                id: product.id,
-                name: product.name,
-                unit_price: product.unit_price,
-                type: product.type,
-                total_qty: totalQty,
-                total_sales: totalSales
-            };
         });
     }
 
