@@ -33,7 +33,8 @@ export class SaleExcelReportService {
 
         const reportData = this.buildReportData(user, sumTotalPrice, formattedOrders, start, end);
 
-        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_POS, 'Sale Report', 'របាយការណ៍លក់រាយ');
+        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_SALE_EXCEL, 'Sale-EXCEL Report', 'របាយការណ៍លក់រាយ');
+        // return reportData;
     }
 
      // =============================>> Private Helper Methods
@@ -78,16 +79,30 @@ export class SaleExcelReportService {
     private buildReportData(user: User, totalSales: number, data: any[], startDate: Date, endDate: Date, totalQty = 0) {
         const now = new Date().toLocaleString('en-US', { timeZone: 'Asia/Phnom_Penh', hour12: true });
 
-        return {
-            currentDate: now.split(',')[0],
-            currentTime: now.split(',')[1].trim(),
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            name: user.name,
-            SumTotalPrice: totalSales,
-            SumTotalSale: totalQty,
-            data
-        };
+        // return {
+        //     currentDate: now.split(',')[0],
+        //     currentTime: now.split(',')[1].trim(),
+        //     startDate: startDate.toISOString(),
+        //     endDate: endDate.toISOString(),
+        //     name: user.name,
+        //     SumTotalPrice: totalSales,
+        //     SumTotalSale: totalQty,
+        //     data
+        // };
+        return{
+            data:{
+                currentDate: now.split(',')[0],
+                currentTime: now.split(',')[1].trim(),
+                startDate: startDate.toISOString().split('T')[0],
+                endDate: endDate.toISOString().split('T')[0],
+                name: user.name,
+                SumTotalPrice: totalSales,
+                SumTotalSale: totalQty,
+                receipts:
+                    data
+            
+            }
+        }
     }
     // Helper to get current date in 'YYYY-MM-DD' format
     private getCurrentDate(): string {

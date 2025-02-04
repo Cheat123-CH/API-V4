@@ -1,17 +1,17 @@
 //===> core library
 import { BadRequestException, Injectable, RequestTimeoutException } from "@nestjs/common";
-import { col, fn, Op }      from "sequelize";
-import { ProductReport }    from "../interface";
+import { col, fn, Op } from "sequelize";
+import { ProductReport } from "../interface";
 
 //===> custom library
-import OrderDetails         from "@app/models/order/detail.model";
-import Order                from "@app/models/order/order.model";
-import Product              from "@app/models/product/product.model";
-import ProductType          from "@app/models/product/type.model";
-import User                 from "@app/models/user/user.model";
+import OrderDetails from "@app/models/order/detail.model";
+import Order from "@app/models/order/order.model";
+import Product from "@app/models/product/product.model";
+import ProductType from "@app/models/product/type.model";
+import User from "@app/models/user/user.model";
 //===> third party library
 
-import { JsReportService }  from "@app/services/js-report.service";
+import { JsReportService } from "@app/services/js-report.service";
 
 @Injectable()
 export class ProductExcelReportService {
@@ -21,9 +21,9 @@ export class ProductExcelReportService {
 
     // ===> Method to generate product sales report in excel format
     async generate(
-        startDate   : string,
-        endDate     : string,
-        userId      : number
+        startDate: string,
+        endDate: string,
+        userId: number
     ) {
         const { start, end } = this.getStartAndEndDateInCambodia(
             startDate || this.getCurrentDate(),
@@ -38,7 +38,8 @@ export class ProductExcelReportService {
 
         const reportData = this.buildReportData(user, totalSales, productData, start, end, totalQty);
 
-        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_PRODUCT, 'Product Sales Report', 'របាយការណ៍លក់តាមផលិតផល');
+        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_PRODUCT_EXCEL, 'Product Sales Report', 'របាយការណ៍លក់តាមផលិតផល');
+        // return reportData;
     }
 
     // Ensure all private helper methods remain unchanged.
@@ -129,16 +130,29 @@ export class ProductExcelReportService {
     private buildReportData(user: User, totalSales: number, data: any[], startDate: Date, endDate: Date, totalQty = 0) {
         const now = new Date().toLocaleString('en-US', { timeZone: 'Asia/Phnom_Penh', hour12: true });
 
+        // return {
+        //     currentDate: now.split(',')[0],
+        //     currentTime: now.split(',')[1].trim(),
+        //     startDate: startDate.toISOString(),
+        //     endDate: endDate.toISOString(),
+        //     name: user.name,
+        //     SumTotalPrice: totalSales,
+        //     SumTotalSale: totalQty,
+        //     data
+        // };
         return {
-            currentDate: now.split(',')[0],
-            currentTime: now.split(',')[1].trim(),
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            name: user.name,
-            SumTotalPrice: totalSales,
-            SumTotalSale: totalQty,
-            data
-        };
+            data: {
+                currentDate: now.split(',')[0],
+                currentTime: now.split(',')[1].trim(),
+                startDate: startDate.toISOString().split('T')[0],
+                endDate: endDate.toISOString().split('T')[0],
+                name: user.name,
+                SumTotalPrice: totalSales,
+                SumTotalSale: totalQty,
+                receipts:
+                    data
+            }
+        }
     }
 
     private getCurrentDate(): string {

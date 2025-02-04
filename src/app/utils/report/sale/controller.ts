@@ -16,8 +16,10 @@ export class SaleReportController {
         
         @UserDecorator() auth: User,
         @Query('startDate') startDate: string,
-        @Query('endDate') endDate: string,report_type? : string) {
-
+        @Query('endDate') endDate: string,
+        @Query('report_type') report_type: string
+    ) {
+        console.log('report_type', report_type);
         return this._service.generate(auth.id, startDate, endDate, report_type);
     }
 }
