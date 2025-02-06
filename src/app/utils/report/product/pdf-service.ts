@@ -38,8 +38,8 @@ export class ProductPDFService {
 
         const reportData = this.buildReportData(user, totalSales, productData, start, end, totalQty);
 
-        // return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_PRODUCT, 'Product Sales Report', 'របាយការណ៍លក់តាមផលិតផល');
-        return reportData;
+        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_PRODUCT, 'Product Sales Report', 'របាយការណ៍លក់តាមផលិតផល');
+        // return reportData;
     }
 
     // =============================>> Private Helper Methods
