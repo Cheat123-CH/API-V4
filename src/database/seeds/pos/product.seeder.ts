@@ -1,5 +1,5 @@
-import Product from "@models/product/product.model";
-import ProductsType from "@models/product/type.model";
+import Product from "@app/models/product/product.model";
+import ProductType from "@app/models/product/type.model";
 
 export class ProductSeeder {
     public static async seed() {
@@ -13,7 +13,7 @@ export class ProductSeeder {
 
     private static async seedProductTypes() {
         try {
-            await ProductsType.bulkCreate(productSeederData.types);
+            await ProductType.bulkCreate(productSeederData.types);
             console.log('\x1b[32mProduct types inserted successfully.');
         } catch (error) {
             console.error('Error seeding product types:', error);

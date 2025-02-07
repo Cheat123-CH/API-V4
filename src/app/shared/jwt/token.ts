@@ -1,5 +1,5 @@
 import jwtConstants from '@app/shared/jwt/constants';
-import User from '@models/user/users.model';
+import User from '@app/models/user/user.model';
 import * as jwt from 'jsonwebtoken';
 
 export abstract class TokenGenerator {

@@ -1,14 +1,14 @@
 // ================================================================>> Core Library
-import Notifications from '@models/notification/notification.model';
-import Order from '@models/order/order.model';
-import User from '@models/user/users.model';
+import Notifications from '@app/models/notification/notification.model';
+import Order from '@app/models/order/order.model';
+import User from '@app/models/user/user.model';
 import { Injectable, NotFoundException } from '@nestjs/common';
 // ================================================================>> Costom Library
 
 @Injectable()
 export class NotificationService {
 
-    async listing() {
+    async getData() {
         try {
             const notifications = await Notifications.findAll({
                 attributes: ['id', 'read'],

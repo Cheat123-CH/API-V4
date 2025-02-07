@@ -10,15 +10,16 @@ import { appRoutes } from './app.routes';
 import { ExceptionErrorsFilter } from './core/exceptions/errors.filter';
 import { TimeoutInterceptor } from './core/interceptors/timeout.interceptor';
 import { JwtMiddleware } from './core/middlewares/jwt.middleware';
-import { AccountModule } from './resources/account/account.module';
-import { AdminModule } from './resources/admin/admin.module';
-import { CashierModule } from './resources/cashier/cashier.module';
+import { AccountModule } from './resources/r1-account/module';
+import { AdminModule } from './resources/r3-admin/module';
+import { CashierModule } from './resources/r2-cashier/module';
 import { UtilsModule } from './utils/utils.module';
 
-import { BasicModule } from './resources/testing/basic/basic.module';
-import { ReportJSModule } from './resources/testing/third-party/report/report.module';
-import { SMSModule } from './resources/testing/third-party/sms/sms.module';
-import { TelegramModule } from './resources/testing/third-party/telegram/telegram.module';
+import { BasicModule } from './resources/r4-testing/basic/module';
+import { ReportJSModule } from './resources/r4-testing/third-party/report/module';
+import { SMSModule } from './resources/r4-testing/third-party/sms/module';
+import { TelegramModule } from './resources/r4-testing/third-party/telegram/module';
+
 
 // ======================== >> Code Starts Here << ========================== //
 @Module({
@@ -48,7 +49,7 @@ import { TelegramModule } from './resources/testing/third-party/telegram/telegra
         ReportJSModule,
 
         //===================== END OF ROLE USER
-        RouterModule.register(appRoutes),
+        RouterModule.register(appRoutes)
     ],
     providers: [
         {
