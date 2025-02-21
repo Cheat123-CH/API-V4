@@ -33,8 +33,8 @@ export class SaleExcelReportService {
 
         const reportData = this.buildReportData(user, sumTotalPrice, formattedOrders, start, end);
 
-        // return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_SALE_EXCEL, 'Sale-EXCEL Report', 'របាយការណ៍លក់រាយ');
-        return reportData;
+        return this.generateAndSendReport(reportData, process.env.JS_TEMPLATE_SALE_EXCEL, 'Sale-EXCEL Report', 'របាយការណ៍លក់រាយ');
+        // return reportData;
     }
 
      // =============================>> Private Helper Methods
