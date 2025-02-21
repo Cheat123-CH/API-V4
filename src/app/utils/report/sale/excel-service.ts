@@ -67,7 +67,8 @@ export class SaleExcelReportService {
             id: order.id,
             receipt_number: order.receipt_number,
             total_price: order.total_price,
-            ordered_at: order.ordered_at,
+            ordered_at: order.ordered_at.toISOString().split('T')[0],
+            order_time: new Date(order.ordered_at).toISOString().split('T')[1].split('.')[0],
             cashier: order.cashier ? {
                 id: order.cashier.id,
                 avatar: order.cashier.avatar,
