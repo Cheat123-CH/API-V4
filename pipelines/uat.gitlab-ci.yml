@@ -1,18 +1,18 @@
-deploy:
-  stage: deploy:uat
-  variables:
-    PROJECT_NAME: pos
-    SERVICE_TYPE: api-v4
-    SERVICE_NAMESPACE: ${PROJECT_NAME}/v2/${SERVICE_TYPE}
-    ENABLED_BUILD: "true"
-    IP_ADDRESS: "109.123.234.230"
-  environment:
-    name: "CamCyber/${PROJECT_NAME}/Development"
-  only:
-    # - /^v-.*-release$/
-    - uat
-  before_script:
-    - source "${POS_ENVIRONMENT}"
-  script:
-    - echo $CI_COMMIT_REF_NAME
-    - bash -e scripts/deploy.sh
+# deploy:
+#   stage: deploy:uat
+#   variables:
+#     PROJECT_NAME: pos
+#     SERVICE_TYPE: api-v4
+#     SERVICE_NAMESPACE: ${PROJECT_NAME}/v2/${SERVICE_TYPE}
+#     ENABLED_BUILD: "true"
+#     IP_ADDRESS: "109.123.234.230"
+#   environment:
+#     name: "CamCyber/${PROJECT_NAME}/Development"
+#   only:
+#     # - /^v-.*-release$/
+#     - uat
+#   before_script:
+#     - source "${POS_ENVIRONMENT}"
+#   script:
+#     - echo $CI_COMMIT_REF_NAME
+#     - bash -e scripts/deploy.sh
