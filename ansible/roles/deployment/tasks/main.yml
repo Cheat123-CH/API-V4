@@ -98,6 +98,7 @@
             DB_USERNAME: "{{ DB_USERNAME }}"
             DB_PASSWORD: "{{ DB_PASSWORD }}"
             DB_DATABASE: "{{ DB_DATABASE }}"
+            DB_TIMEZONE: "{{ DB_TIMEZONE }}"
 
             # JWT Configuration
             JWT_SECRET: "{{ JWT_SECRET }}"
@@ -112,12 +113,14 @@
             #JS Report
             JS_BASE_URL: "{{ JS_BASE_URL }}"
             JS_USERNAME: "{{ JS_USERNAME }}"
-            JS_USERNAME: "{{ JS_USERNAME }}"
+            JS_PASSWORD: "{{ JS_PASSWORD }}"
             JS_TEMPLATE: "{{ JS_TEMPLATE }}"
 
             JS_TEMPLATE_POS: "{{ JS_TEMPLATE_POS }}"
             JS_TEMPLATE_CASHIER: "{{ JS_TEMPLATE_CASHIER }}"
             JS_TEMPLATE_PRODUCT: "{{ JS_TEMPLATE_PRODUCT }}"
+            JS_TEMPLATE_SALE_EXCEL: "{{ JS_TEMPLATE_SALE_EXCEL }}"
+            JS_TEMPLATE_PRODUCT_EXCEL: "{{ JS_TEMPLATE_PRODUCT_EXCEL }}"
 
             #===========================>> Telegram Bot
             TELEGRAM_BOT_TOKEN: "{{ TELEGRAM_BOT_TOKEN }}"
