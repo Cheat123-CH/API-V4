@@ -19,22 +19,138 @@ export class DashboardService {
 
     constructor(private jsReportService: JsReportService) { }
 
-    async findStaticData(filters: { today?: string; yesterday?: string; thisWeek?: string; thisMonth?: string } = {}): Promise<any> {
+    // async findStaticData(filters: { today?: string; yesterday?: string; thisWeek?: string; thisMonth?: string } = {}): Promise<any> {
+    //     try {
+
+    //         const dateFilter = this.getDateFilter(filters);
+
+    //         // Build the document filter, including the date filter only if it's not empty
+    //         const dataFilter: any = { ...dateFilter };
+
+    //         const totalProduct = await this.countProduct(dataFilter);
+    //         const totalProductType = await this.countProductType(dataFilter);
+    //         const totalUser = await this.countUser(dataFilter);
+    //         const totalOrder = await this.countOrder(dataFilter);
+
+    //         let currentPeriodFilter: any;
+    //         let previousPeriodFilter: any;
+
+    //         const formatDate = (date: Date) => date.toISOString().split('T')[0];
+
+    //         if (filters.yesterday) {
+    //             const yesterdayDate = new Date(filters.yesterday);
+    //             const dayBeforeYesterday = new Date(yesterdayDate);
+    //             dayBeforeYesterday.setDate(yesterdayDate.getDate() - 1);
+
+    //             currentPeriodFilter = {
+    //                 where: where(fn('DATE', col('ordered_at')), Op.eq, formatDate(yesterdayDate)),
+    //             };
+    //             previousPeriodFilter = {
+    //                 where: where(fn('DATE', col('ordered_at')), Op.eq, formatDate(dayBeforeYesterday)),
+    //             };
+    //         } else if (filters.today) {
+    //             const today = formatDate(new Date());
+    //             const yesterday = new Date();
+    //             yesterday.setDate(new Date().getDate() - 1);
+
+    //             currentPeriodFilter = {
+    //                 where: where(fn('DATE', col('ordered_at')), Op.eq, today),
+    //             };
+    //             previousPeriodFilter = {
+    //                 where: where(fn('DATE', col('ordered_at')), Op.eq, formatDate(yesterday)),
+    //             };
+    //         } else if (filters.thisWeek) {
+    //             const startOfThisWeek = this.getStartOfWeek(new Date());
+    //             const startOfLastWeek = this.getStartOfWeek(new Date(startOfThisWeek));
+    //             const endOfLastWeek = new Date(startOfThisWeek);
+    //             endOfLastWeek.setDate(endOfLastWeek.getDate() - 1);
+
+    //             currentPeriodFilter = {
+    //                 ordered_at: { [Op.gte]: startOfThisWeek },
+    //             };
+    //             previousPeriodFilter = {
+    //                 ordered_at: { [Op.gte]: startOfLastWeek, [Op.lte]: endOfLastWeek },
+    //             };
+    //         } else if (filters.thisMonth) {
+    //             const startOfThisMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    //             const startOfLastMonth = new Date(startOfThisMonth);
+    //             startOfLastMonth.setMonth(startOfLastMonth.getMonth() - 1);
+    //             const endOfLastMonth = new Date(startOfThisMonth);
+    //             endOfLastMonth.setDate(0);
+
+    //             currentPeriodFilter = {
+    //                 ordered_at: { [Op.gte]: startOfThisMonth },
+    //             };
+    //             previousPeriodFilter = {
+    //                 ordered_at: { [Op.gte]: startOfLastMonth, [Op.lte]: endOfLastMonth },
+    //             };
+    //         }
+
+    //         const totalSaleCurrent = await Order.sum('total_price', currentPeriodFilter) ?? 0;
+    //         const totalSalePrevious = await Order.sum('total_price', previousPeriodFilter) ?? 0;
+    //         const saleIncrease = totalSaleCurrent - totalSalePrevious;
+    //         const saleDifferenceWithSign = saleIncrease >= 0 ? `+${saleIncrease}` : `${saleIncrease}`;
+
+    //         let totalPercentageIncrease: number;
+    //         if (totalSaleCurrent === 0 && totalSalePrevious === 0) {
+    //             totalPercentageIncrease = 0;
+    //         } else {
+    //             const percentageChange = ((totalSaleCurrent - totalSalePrevious) /
+    //                 (totalSaleCurrent + totalSalePrevious)) * 100;
+    //             totalPercentageIncrease = Math.max(-100, Math.min(percentageChange, 100));
+    //             totalPercentageIncrease = parseFloat(totalPercentageIncrease.toFixed(2));
+    //         }
+
+    //         return {
+    //             dashoard: [
+    //                 {
+    //                     statistic: {
+    //                         totalProduct,
+    //                         totalProductType,
+    //                         totalUser,
+    //                         totalOrder,
+    //                         total: totalSaleCurrent,
+    //                         totalPercentageIncrease,
+    //                         saleIncreasePreviousDay: saleDifferenceWithSign,
+    //                     }
+    //                 },
+    //             ],
+    //             message: "ទទួលបានទិន្នន័យដោយជោគជ័យ",
+    //         };
+    //     } catch (err) {
+    //         throw new BadRequestException(err.message);
+    //     }
+    // }
+
+    async findStaticData(filters: { today?: string; yesterday?: string; thisWeek?: string; thisMonth?: string, threeMonthAgo?: string, sixMonthAgo?: string, type?: number } = {}): Promise<any> {
         try {
-
             const dateFilter = this.getDateFilter(filters);
-
-            // Build the document filter, including the date filter only if it's not empty
             const dataFilter: any = { ...dateFilter };
 
-            const totalProduct = await this.countProduct(dataFilter);
-            const totalProductType = await this.countProductType(dataFilter);
-            const totalUser = await this.countUser(dataFilter);
-            const totalOrder = await this.countOrder(dataFilter);
+            if (filters.type) {
+                dataFilter.type = filters.type;
+            }
+
+            const [
+                totalProduct,
+                totalProductType,
+                totalUser,
+                totalOrder,
+                totalSaleDayOfWeek,
+                productTypesWithProductCounts,
+                cashiers
+            ] = await Promise.all([
+                this.countProduct(dataFilter),
+                this.countProductType(dataFilter),
+                this.countUser(dataFilter),
+                this.countOrder(dataFilter),
+                this.findDataSaleDayOfWeek(filters),
+                this.findProductTypeWithProductHaveUsed(filters),
+                this.findCashierAndTotalSale(filters)
+            ]);
 
             let currentPeriodFilter: any;
             let previousPeriodFilter: any;
-
             const formatDate = (date: Date) => date.toISOString().split('T')[0];
 
             if (filters.yesterday) {
@@ -95,24 +211,61 @@ export class DashboardService {
             if (totalSaleCurrent === 0 && totalSalePrevious === 0) {
                 totalPercentageIncrease = 0;
             } else {
-                const percentageChange = ((totalSaleCurrent - totalSalePrevious) /
-                    (totalSaleCurrent + totalSalePrevious)) * 100;
+                const percentageChange = ((totalSaleCurrent - totalSalePrevious) / (totalSaleCurrent + totalSalePrevious)) * 100;
                 totalPercentageIncrease = Math.max(-100, Math.min(percentageChange, 100));
                 totalPercentageIncrease = parseFloat(totalPercentageIncrease.toFixed(2));
             }
 
-            return {
-                statatics: {
-                    totalProduct,
-                    totalProductType,
-                    totalUser,
-                    totalOrder,
-                    total: totalSaleCurrent,
-                    totalPercentageIncrease,
-                    saleIncreasePreviousDay: saleDifferenceWithSign,
+            const result = {
+                dashboard: {
+                    statistic: {
+                        totalProduct,
+                        totalProductType,
+                        totalUser,
+                        totalOrder,
+                        total: totalSaleCurrent,
+                        totalPercentageIncrease,
+                        saleIncreasePreviousDay: saleDifferenceWithSign,
+                    },
+                    salesData: totalSaleDayOfWeek,
+                    productTypeData: productTypesWithProductCounts,
+                    cashierData: cashiers,
                 },
                 message: "ទទួលបានទិន្នន័យដោយជោគជ័យ",
             };
+
+            switch (filters.type) {
+                case 1:
+                    return {
+                        dashboard: {
+                            statistic: result.dashboard.statistic,
+                        },
+                        message: result.message,
+                    };
+                case 2:
+                    return {
+                        dashboard: {
+                            salesData: result.dashboard.salesData,
+                        },
+                        message: result.message,
+                    };
+                case 3:
+                    return {
+                        dashboard: {
+                            productTypeData: result.dashboard.productTypeData,
+                        },
+                        message: result.message,
+                    };
+                case 4:
+                    return {
+                        dashboard: {
+                            cashierData: result.dashboard.cashierData,
+                        },
+                        message: result.message,
+                    };
+                default:
+                    return result;
+            }
         } catch (err) {
             throw new BadRequestException(err.message);
         }
