@@ -7,6 +7,7 @@ DB_PORT: 5432
 DB_USERNAME: postgres
 DB_PASSWORD: secret
 DB_DATABASE: pos
+DB_TIMEZONE: Asia/Phnom_Penh
 
 #==========================>> JWT
 JWT_SECRET: '6d8d73f7e3c0a76b1ad3cbf0c04a9b7d3c83a8e07f1e8a6d9e2efcb876c94e3fbd7c2a7851b1f98b7b2bfb0b31c27c5b'
@@ -18,16 +19,17 @@ FILE_BASE_URL: http://container_file:8080
 # FILE_USERNAME:    
 # FILE_PASSWORD:   
   
-#==========================>> Js report
-JS_BASE_URL: https://amt-report.uat.camcyber.com
-JS_USERNAME: admin
-JS_PASSWORD: amt@2024
+# ==========================>> Js report
+JS_BASE_URL: https://sopattjr123.jsreportonline.net
+JS_USERNAME: www.vanhong168@gmail.com
+JS_PASSWORD: Patt2004
 JS_TEMPLATE: /Invoice/main
-
-JS_TEMPLATE_POS: /report_pos/main
+JS_TEMPLATE_POS: /report_sale/pdf/main
 JS_TEMPLATE_CASHIER: /report_cashier/main
-JS_TEMPLATE_PRODUCT: /report_product/main
+JS_TEMPLATE_PRODUCT: /report_product/pdf/main
+JS_TEMPLATE_SALE_EXCEL: /report_sale/excel/sale-excel
+JS_TEMPLATE_PRODUCT_EXCEL: /report_product/excel/product-excel
 
 #===========================>> Telegram Bot
 TELEGRAM_BOT_TOKEN: 7593739467:AAENNf38VttIRP0VMWaq1R2Aq-uMIaF26OQ
-TELEGRAM_CHAT_ID: -1002334502755
+TELEGRAM_CHAT_ID: 1099740653
