@@ -40,7 +40,7 @@
     accept_hostkey: true
     version: "{{ ci_branch }}"
     force: yes
-  no_log: false
+  no_log: true
 
 # - name: Install dependencies for NestJS project
 #   ansible.builtin.shell:
@@ -133,4 +133,4 @@
       networks:
         camcyber:
           external: true
-  no_log: false
+  no_log: true
