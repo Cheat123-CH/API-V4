@@ -14,10 +14,10 @@ export class BasicController {
     @Get('sum-1')
     sum1(){
 
-        let a = 10;
-        let b = 6;
+        let a = 4;
+        let b = 60;
 
-        const c = a + b;
+        const c = Math.sqrt(a + b);
 
         return c; 
 
@@ -27,12 +27,28 @@ export class BasicController {
     @Get('sum-2')
     sum2(
 
+        // Get request from client
         @Query('a') a?: number,
         @Query('b') b?: number
     
     ){
         const c = a + b;
         return c; 
+
+    }
+
+    // ====================================================>> sqrt-root
+    @Get('sqrt-root')
+    sqrtRoot(
+
+        // Get request from client
+        @Query('a') a?: number,
+        @Query('b') b?: number,
+        @Query('c') c?: number
+    
+    ){
+        const d = a + b + c;
+        return Math.sqrt(d); 
 
     }
 

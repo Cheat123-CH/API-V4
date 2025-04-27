@@ -31,7 +31,7 @@ export const appRoutes: Routes = [{
         },
 
         {
-            path: 'testing',
+            path: 'testing',// Start
             children: testingRoutes
         },
     ]
