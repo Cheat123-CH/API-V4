@@ -49,7 +49,10 @@ export class FileController {
         }
 
         // Return to Postman
-        return result;
+        return {
+            message: "File has been uploaded to file service", 
+            result: result.file
+        };
 
 
     }
