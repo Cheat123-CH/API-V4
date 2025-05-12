@@ -2,13 +2,13 @@
 import { Body, Controller, Get, Query } from '@nestjs/common';
 
 // =========================================================================>> Custom Library
-import { BasicService } from './service';
+
 
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()
 export class BasicController {
 
-    constructor(private readonly _service: BasicService) { };
+    constructor() { };
 
     // ====================================================>> Sum 1
     @Get('sum-1')
@@ -17,9 +17,9 @@ export class BasicController {
         let a = 4;
         let b = 60;
 
-        const c = Math.sqrt(a + b);
+        const c = a + b; 
 
-        return c; 
+        return c;
 
     }
 

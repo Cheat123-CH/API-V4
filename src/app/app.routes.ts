@@ -33,6 +33,6 @@ export const appRoutes: Routes = [{
         {
             path: 'testing',// Start
             children: testingRoutes
-        },
+        }
     ]
 }];
