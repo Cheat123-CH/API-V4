@@ -24,13 +24,22 @@ export class TelegramService {
     }
 
     async sendMessage(botToken: string, chatId: string, message: string): Promise<any> {
+
+        // Send to Telegram Server
         try {
+            
+            // Perpare URL. 
             const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+            // Send Telegram Server
             const response = await axios.post(url, {
-                chat_id: chatId,
-                text: message,
+                chat_id : chatId,
+                text    : message,
             });
+
+            // Response to Client (Postman)
             return response.data;
+
         } catch (error) {
             if (error.response) {
                 const { status, data } = error.response;
@@ -51,10 +60,10 @@ export class TelegramService {
     }
 
     async sendLocation(
-        botToken: string,
-        chatId: string,
-        latitude: number,
-        longitude: number,
+        botToken    : string,
+        chatId      : string,
+        latitude    : number,
+        longitude   : number,
     ): Promise<any> {
         try {
             const url = `https://api.telegram.org/bot${botToken}/sendLocation`;

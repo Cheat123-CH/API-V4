@@ -28,6 +28,8 @@ export class FileController {
         @Body() body: FileDto // Catch file from Post
     ){
 
+        // return body; 
+
         // Prepare Payload
         const data: UploadBase64ImageBody = {
             image   : body.image,
@@ -39,7 +41,6 @@ export class FileController {
 
         // Call File Serivce
         try {
-
 
             const response = await firstValueFrom(this.httpService.post('http://localhost:4000/api/file/upload-base64', data));
             result.file = response.data.data;

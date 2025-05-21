@@ -20,10 +20,10 @@ export const testingRoutes: Routes = [
         module: FileModule
     }, 
 
-    // {
-    //     path: 'telegram',
-    //     module: TelegramModule
-    // }, 
+    {
+        path: 'telegram',
+        module: TelegramModule
+    }, 
     // {
     //     path: 'sms',
     //     module: SMSModule
