@@ -1,6 +1,5 @@
 // =========================================================================>> Core Library
-import { Body, Controller, Post, Get, Query } from '@nestjs/common';
-import * as FormData from 'form-data';
+import { Body, Controller, Post} from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
@@ -13,8 +12,7 @@ interface UploadBase64ImageBody {
     image: string;
 }
 
-// Union type for request bodies
-type RequestBody = UploadBase64ImageBody | FormData;
+
 
 // ======================================= >> Code Starts Here << ========================== //
 @Controller()
@@ -28,10 +26,9 @@ export class FileController {
         @Body() body: FileDto // Catch file from Post
     ){
 
-        // return body; 
 
         // Prepare Payload
-        const data: UploadBase64ImageBody = {
+        const payload: UploadBase64ImageBody = {
             image   : body.image,
             folder  : body.folder
         };
@@ -42,7 +39,7 @@ export class FileController {
         // Call File Serivce
         try {
 
-            const response = await firstValueFrom(this.httpService.post('http://localhost:4000/api/file/upload-base64', data));
+            const response = await firstValueFrom(this.httpService.post('http://localhost:4000/api/file/upload-base64', payload));
             result.file = response.data.data;
 
         } catch (error) {

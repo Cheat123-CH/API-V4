@@ -225,11 +225,11 @@ export class UserService {
 
         // Upload the avatar image to the file service
         const result = await this.fileService.uploadBase64Image('user', body.avatar);
-        if (result.error) {
-            throw new BadRequestException(result.error);
-        }
-        // Set the avatar to the file URI returned from the file service
-        body.avatar = result.file.uri;
+        // if (result.error) {
+        //     throw new BadRequestException(result.error);
+        // }
+        // // Set the avatar to the file URI returned from the file service
+        // body.avatar = result.file.uri;
 
         let createdUser;
         // Create the new user in the database
@@ -335,18 +335,18 @@ export class UserService {
             throw new ConflictException('Email is already in use');
         }
 
-        if (body.avatar && !body.avatar.startsWith('upload/file/')) {
-            if (this.isValidBase64(body.avatar)) {
-                const result = await this.fileService.uploadBase64Image('user', body.avatar);
-                if (result.error) {
-                    throw new BadRequestException(result.error);
-                }
-                // Replace base64 string by file URI from FileService
-                body.avatar = result.file?.uri;
-            } else {
-                throw new BadRequestException('Invalid image format');
-            }
-        }
+        // if (body.avatar && !body.avatar.startsWith('upload/file/')) {
+        //     if (this.isValidBase64(body.avatar)) {
+        //         const result = await this.fileService.uploadBase64Image('user', body.avatar);
+        //         if (result.error) {
+        //             throw new BadRequestException(result.error);
+        //         }
+        //         // Replace base64 string by file URI from FileService
+        //         body.avatar = result.file?.uri;
+        //     } else {
+        //         throw new BadRequestException('Invalid image format');
+        //     }
+        // }
 
         // Update basic user information (name, avatar, phone, email, updater_id)
         try {

@@ -248,11 +248,11 @@ export class ProductService {
         }
 
         const result = await this.fileService.uploadBase64Image('product', body.image);
-        if (result.error) {
-            throw new BadRequestException(result.error);
-        }
-        // Replace base64 string by file URI from FileService
-        body.image = result.file.uri;
+        // if (result.error) {
+        //     throw new BadRequestException(result.error);
+        // }
+        // // Replace base64 string by file URI from FileService
+        // body.image = result.file.uri;
 
         // Create the new product
         const product = await Product.create({
@@ -315,16 +315,16 @@ export class ProductService {
             throw new BadRequestException('This name already exists in the system.');
         }
 
-        if (body.image) {
-            const result = await this.fileService.uploadBase64Image('product', body.image);
-            if (result.error) {
-                throw new BadRequestException(result.error);
-            }
-            // Replace base64 string by file URI from FileService
-            body.image = result.file.uri;
-        } else {
-            body.image = undefined;
-        }
+        // if (body.image) {
+        //     const result = await this.fileService.uploadBase64Image('product', body.image);
+        //     if (result.error) {
+        //         throw new BadRequestException(result.error);
+        //     }
+        //     // Replace base64 string by file URI from FileService
+        //     body.image = result.file.uri;
+        // } else {
+        //     body.image = undefined;
+        // }
 
         // Update the product
         await Product.update(body, {

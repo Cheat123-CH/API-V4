@@ -9,14 +9,14 @@ import {
 import { Op, Sequelize } from "sequelize";
 
 // ===========================================================================>> Custom Library
-import { FileService } from "@app/services/file.service";
-import Product from "@app/models/product/product.model";
-import ProductType from "@app/models/product/type.model";
+import { FileService }  from "@app/services/file.service";
+import Product          from "@app/models/product/product.model";
+import ProductType      from "@app/models/product/type.model";
 import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
 
 @Injectable()
 export class ProductTypeService {
-  constructor(private readonly fileService: FileService) {}
+  constructor(private readonly _fileService: FileService) {}
 
   // ==========================================>> get data
   async getData(){
@@ -32,7 +32,7 @@ export class ProductTypeService {
           },
         ],
         group: ["ProductType.id"], // Group by the ProductType id
-        order: [["name", "ASC"]], // Order by name
+        order: [["name", "DESC"]], // Order by name
       });
 
       return {
@@ -50,34 +50,29 @@ export class ProductTypeService {
   // ==========================================>> create
   async create(
     body: CreateProductTypeDto
-  ): Promise<{ data: ProductType; message: string }> {
-    const checkExistName = await ProductType.findOne({
-      where: { name: body.name },
-    });
-    if (checkExistName) {
-      throw new BadRequestException("ឈ្មោះនេះមានក្នុងប្រព័ន្ធ");
-    }
-    const result = await this.fileService.uploadBase64Image(
-      "product",
-      body.image
+  ): Promise<any> {
+
+    // ===>> Upload Image
+    const result = await this._fileService.uploadBase64Image(
+      "productType", // Folder Name
+      body.image // the image
     );
-    if (result.error) {
-      throw new BadRequestException(result.error);
-    }
-    // Replace base64 string by file URI from FileService
-    body.image = result.file.uri;
 
-    const productType = await ProductType.create({
-      name: body.name,
-      image: "abc",
+    // ===>> Save to DB
+    const data = await ProductType.create({
+      name  : body.name,
+      image : result.data.uri,
     });
 
+    // ===>> Prepare format to Client
     const dataFormat = {
-      data: productType,
-      message: "Product type has been created.",
+      data    : data,
+      message : "Product type has been created.",
     } as { data: ProductType; message: string };
 
+    // ===>> Return to Client
     return dataFormat;
+
   }
 
   // ==========================================>> update
@@ -85,43 +80,24 @@ export class ProductTypeService {
     body: UpdateProductTypeDto,
     id: number
   ): Promise<{ data: ProductType; message: string }> {
-    const checkExist = await ProductType.findByPk(id);
-    if (!checkExist) {
-      throw new BadRequestException("គ្មានទិន្នន័យនៅក្នុងប្រព័ន្ធ");
-    }
-    if (body.image) {
-      const result = await this.fileService.uploadBase64Image(
-        "product",
-        body.image
-      );
-      if (result.error) {
-        throw new BadRequestException(result.error);
-      }
-      // Replace base64 string by file URI from FileService
-      body.image = result.file.uri;
-    } else {
-      body.image = undefined;
-    }
-    const checkExistName = await ProductType.findOne({
-      where: {
-        id: { [Op.not]: id },
-        name: body.name,
-      },
-    });
-    if (checkExistName) {
-      throw new BadRequestException("ឈ្មោះនេះមានក្នុងប្រព័ន្ធ");
-    }
+
+    // Check if file is submitted.
+
     await ProductType.update(body, {
       where: { id: id },
     });
 
-    const dataFormat = {
-      data: await ProductType.findByPk(id, {
+    const data = await ProductType.findByPk(id, {
         attributes: ["id", "name", "image", "updated_at"],
-      }),
-      message: "Product type has been created.",
+      })
+
+    const dataFormat = {
+      data    : data,
+      message : "Product type has been created.",
     } as { data: ProductType; message: string };
+
     return dataFormat;
+
   }
 
   // ==========================================>> delete

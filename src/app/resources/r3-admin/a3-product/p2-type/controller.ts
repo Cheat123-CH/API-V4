@@ -15,7 +15,7 @@ export class ProductTypeController {
     private _service: ProductTypeService
   ){}
 
-  // =============================================>> Get Data
+  // =============================================>> Get Data or Read
   @Get("data")
   async getData(){
 
