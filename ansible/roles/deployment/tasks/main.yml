@@ -23,15 +23,18 @@
     path: "{{ app_dir }}"
     state: directory
     recurse: yes
+  no_log: true # Temporarily set to false for troubleshooting
 
 - name: Remove existing Docker containers if they exist
   community.docker.docker_container:
     name: "{{ item }}"
     state: absent
   loop:
-    # - amt_nginx
-    - pos-v2-api
+    - pos_api
   ignore_errors: yes
+
+- name: Clean up unused Docker resources
+  command: docker system prune -a -f
 
 - name: Clone remote repository into server
   ansible.builtin.git:
@@ -41,20 +44,6 @@
     version: "{{ ci_branch }}"
     force: yes
   no_log: true
-
-# - name: Install dependencies for NestJS project
-#   ansible.builtin.shell:
-#     cmd: "npm install"
-#     args:
-#       chdir: "{{ app_dir }}"
-#   no_log: false
-
-# - name: Build NestJS project
-#   ansible.builtin.shell:
-#     cmd: "npm run build"
-#     args:
-#       chdir: "{{ app_dir }}"
-#   no_log: false
 
 - name: Ensure Docker network exists
   community.docker.docker_network:
@@ -68,68 +57,53 @@
     definition:
       version: "3.8"
       services:
-        # amt_nginx:
-        #   image: nginx:alpine
-        #   container_name: amt-nginx
-        #   restart: unless-stopped
-        #   tty: true
-        #   ports:
-        #     - "8210:80"
-        #   volumes:
-        #     - "{{ app_dir }}:/var/www/html"
-        #     - "{{ app_dir }}/nginx:/etc/nginx/conf.d"
-        #     - volume:/var/www/html/vendor
-        #   networks:
-        #     - camcyber
-
-        pos-v2-api:
-          container_name: pos-v2-api
+        pos_api:
+          container_name: pos_api
           build:
             context: "{{ app_dir }}"
             dockerfile: Dockerfile
           volumes:
             - "{{ app_dir }}:/usr/src/app"
+            # - 'vendor_volume:/var/www/html/vendor'
           environment:
-            APP_NAME: "{{ APP_NAME }}"
-            # DEV_OTP: "{{ DEV_OTP }}"
-            DB_CONNECTION: "{{ DB_CONNECTION }}"
+            # PORT                : "{{ PORT }}"
+            # ENV                 : "{{ ENV }}"
+
+            # DB Configuration
+            DB_CONNECTION: "{{DB_CONNECTION }}"
             DB_HOST: "{{ DB_HOST }}"
             DB_PORT: "{{ DB_PORT }}"
             DB_USERNAME: "{{ DB_USERNAME }}"
             DB_PASSWORD: "{{ DB_PASSWORD }}"
             DB_DATABASE: "{{ DB_DATABASE }}"
-            DB_TIMEZONE: "{{ DB_TIMEZONE }}"
+            # DB_TIMEZONE         : "{{ DB_TIMEZONE }}"
 
             # JWT Configuration
             JWT_SECRET: "{{ JWT_SECRET }}"
             JWT_EXPIRES: "{{ JWT_EXPIRES }}"
 
             # File Service Configuration
-            # FILE_USERNAME: "{{ FILE_USERNAME }}"
-            # FILE_KEY: "{{ FILE_KEY }}"
-            # FILE_PASSWORD: "{{ FILE_PASSWORD }}"
             FILE_BASE_URL: "{{ FILE_BASE_URL }}"
+            FILE_USERNAME: "{{ FILE_USERNAME }}"
+            FILE_PASSWORD: "{{ FILE_PASSWORD }}"
+            FILE_KEY: "{{ FILE_KEY }}"
 
-            #JS Report
+            # JSReport Configuration
             JS_BASE_URL: "{{ JS_BASE_URL }}"
             JS_USERNAME: "{{ JS_USERNAME }}"
             JS_PASSWORD: "{{ JS_PASSWORD }}"
-            JS_TEMPLATE: "{{ JS_TEMPLATE }}"
 
-            JS_TEMPLATE_POS: "{{ JS_TEMPLATE_POS }}"
-            JS_TEMPLATE_CASHIER: "{{ JS_TEMPLATE_CASHIER }}"
-            JS_TEMPLATE_PRODUCT: "{{ JS_TEMPLATE_PRODUCT }}"
-            JS_TEMPLATE_SALE_EXCEL: "{{ JS_TEMPLATE_SALE_EXCEL }}"
-            JS_TEMPLATE_PRODUCT_EXCEL: "{{ JS_TEMPLATE_PRODUCT_EXCEL }}"
-
-            #===========================>> Telegram Bot
+            # Telegram Bot Configuration
             TELEGRAM_BOT_TOKEN: "{{ TELEGRAM_BOT_TOKEN }}"
             TELEGRAM_CHAT_ID: "{{ TELEGRAM_CHAT_ID }}"
+            # TELEGRAM_LOGGER_CHAT_ID    : "{{ TELEGRAM_LOGGER_CHAT_ID }}"
 
           ports:
             - "9003:3000"
           networks:
             - camcyber
+      volumes:
+        volume:
       networks:
         camcyber:
           external: true

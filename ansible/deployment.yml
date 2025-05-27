@@ -4,5 +4,6 @@
   any_errors_fatal: no
   debugger: on_failed
   become: yes
+  no_log: true
   roles:
     - deployment
