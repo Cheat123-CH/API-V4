@@ -40,10 +40,10 @@
   ansible.builtin.git:
     repo: "git@gitlab.camcyber.com:{{ repo_path }}.git"
     dest: "{{ app_dir }}"
-    accept_hostkey: true
+    accept_hostkey: false
     version: "{{ ci_branch }}"
     force: yes
-  no_log: true
+  no_log: false
 
 - name: Ensure Docker network exists
   community.docker.docker_network:
