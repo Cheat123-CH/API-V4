@@ -5,7 +5,7 @@ deploy:
     SERVICE_TYPE: web
     SERVICE_NAMESPACE: ${PROJECT_NAME}/${SERVICE_TYPE}
     ENABLED_BUILD: "true"
-    IP_ADDRESS: "109.123.234.231"
+    IP_ADDRESS: "109.123.234.230"
   environment:
     name: "CamCyber/${PROJECT_NAME}/Development"
   only:

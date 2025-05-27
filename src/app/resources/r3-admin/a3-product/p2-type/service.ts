@@ -19,12 +19,19 @@ export class ProductTypeService {
   constructor(private readonly fileService: FileService) {}
 
   // ==========================================>> get data
-  async getData(){
-
+  async getData() {
     try {
-
       const data = await ProductType.findAll({
-        attributes: [  "id", "name",  "image", "created_at", [Sequelize.fn("COUNT", Sequelize.col("products.id")), "n_of_products"]],
+        attributes: [
+          "id",
+          "name",
+          "image",
+          "created_at",
+          [
+            Sequelize.fn("COUNT", Sequelize.col("products.id")),
+            "n_of_products",
+          ],
+        ],
         include: [
           {
             model: Product,
@@ -36,15 +43,11 @@ export class ProductTypeService {
       });
 
       return {
-        data: data
-      }; 
-
+        data: data,
+      };
     } catch (error) {
-
-      throw new BadRequestException('admin/product/type/getData', error);
+      throw new BadRequestException("admin/product/type/getData", error);
     }
-
-    
   }
 
   // ==========================================>> create
@@ -67,11 +70,13 @@ export class ProductTypeService {
     // Replace base64 string by file URI from FileService
     body.image = result.file.uri;
 
+    // Save to DB
     const productType = await ProductType.create({
       name: body.name,
       image: "abc",
     });
 
+    // Respon
     const dataFormat = {
       data: productType,
       message: "Product type has been created.",

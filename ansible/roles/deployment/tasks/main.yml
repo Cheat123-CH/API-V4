@@ -84,14 +84,21 @@
 
             # File Service Configuration
             FILE_BASE_URL: "{{ FILE_BASE_URL }}"
-            FILE_USERNAME: "{{ FILE_USERNAME }}"
-            FILE_PASSWORD: "{{ FILE_PASSWORD }}"
-            FILE_KEY: "{{ FILE_KEY }}"
+            # FILE_USERNAME: "{{ FILE_USERNAME }}"
+            # FILE_PASSWORD: "{{ FILE_PASSWORD }}"
+            # FILE_KEY: "{{ FILE_KEY }}"
 
             # JSReport Configuration
             JS_BASE_URL: "{{ JS_BASE_URL }}"
             JS_USERNAME: "{{ JS_USERNAME }}"
             JS_PASSWORD: "{{ JS_PASSWORD }}"
+            JS_TEMPLATE: "{{ JS_TEMPLATE }}"
+            JS_TEMPLATE_POS: "{{ JS_TEMPLATE_POS }}"
+            JS_TEMPLATE_CASHIER: "{{ JS_TEMPLATE_CASHIER }}"
+            JS_TEMPLATE_PRODUCT: "{{ JS_TEMPLATE_PRODUCT }}"
+            JS_TEMPLATE_SALE_EXCEL: "{{ JS_TEMPLATE_SALE_EXCEL }}"
+            JS_TEMPLATE_PRODUCT_EXCEL: "{{ JS_TEMPLATE_PRODUCT_EXCEL }}"
+
 
             # Telegram Bot Configuration
             TELEGRAM_BOT_TOKEN: "{{ TELEGRAM_BOT_TOKEN }}"
