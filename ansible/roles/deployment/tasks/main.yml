@@ -43,7 +43,7 @@
     accept_hostkey: false
     version: "{{ ci_branch }}"
     force: yes
-  no_log: false
+  no_log: true
 
 - name: Ensure Docker network exists
   community.docker.docker_network:
@@ -114,4 +114,4 @@
       networks:
         camcyber:
           external: true
-  no_log: false
+  no_log: true
