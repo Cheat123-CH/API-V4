@@ -55,7 +55,7 @@ export class ProductTypeService {
     // ===>> Upload Image
     const result = await this._fileService.uploadBase64Image(
       "productType", // Folder Name
-      body.image // the image
+      body.image // the image as base64 from client
     );
 
     // ===>> Save to DB
@@ -77,8 +77,8 @@ export class ProductTypeService {
 
   // ==========================================>> update
   async update(
-    body: UpdateProductTypeDto,
-    id: number
+    body  : UpdateProductTypeDto,
+    id    : number
   ): Promise<{ data: ProductType; message: string }> {
 
     // Check if file is submitted.
