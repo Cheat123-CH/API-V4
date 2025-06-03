@@ -1,6 +1,5 @@
 // ===========================================================================>> Core Library
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
@@ -9,40 +8,41 @@ import {
 import { Op, Sequelize } from "sequelize";
 
 // ===========================================================================>> Custom Library
-import { FileService }  from "@app/services/file.service";
-import Product          from "@app/models/product/product.model";
-import ProductType      from "@app/models/product/type.model";
-import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
+import { TelegramService }                              from "@app/resources/r4-testing/third-party/telegram/service";
+
+import { FileService }                                  from "@app/services/file.service";
+import Product                                          from "@app/models/product/product.model";
+import ProductType                                      from "@app/models/product/type.model";
+import { CreateProductTypeDto, UpdateProductTypeDto }   from "./dto";
 
 @Injectable()
 export class ProductTypeService {
-  constructor(private readonly _fileService: FileService) {}
+
+  constructor(
+    private readonly _fileService       : FileService,
+    private readonly _telegramService   : TelegramService
+  ) {}
 
   // ==========================================>> get data
   async getData(){
 
-    try {
+    // Get Data from DB
+    const data = await ProductType.findAll({
+      attributes: [  "id", "name",  "image", "created_at", [Sequelize.fn("COUNT", Sequelize.col("products.id")), "n_of_products"]],
+      include: [
+        {
+          model: Product,
+          attributes: [], // We don't need any product attributes, just the count
+        },
+      ],
+      group: ["ProductType.id"], // Group by the ProductType id
+      order: [["id", "DESC"]], // Order by name
+    });
 
-      const data = await ProductType.findAll({
-        attributes: [  "id", "name",  "image", "created_at", [Sequelize.fn("COUNT", Sequelize.col("products.id")), "n_of_products"]],
-        include: [
-          {
-            model: Product,
-            attributes: [], // We don't need any product attributes, just the count
-          },
-        ],
-        group: ["ProductType.id"], // Group by the ProductType id
-        order: [["name", "DESC"]], // Order by name
-      });
-
-      return {
-        data: data
-      }; 
-
-    } catch (error) {
-
-      throw new BadRequestException('admin/product/type/getData', error);
-    }
+    // ===>> Return to Client
+    return {
+      data: data
+    }; 
 
     
   }
@@ -68,7 +68,10 @@ export class ProductTypeService {
     const dataFormat = {
       data    : data,
       message : "Product type has been created.",
-    } as { data: ProductType; message: string };
+    };
+
+    // ===>> Send to TG
+    // await this._telegramService.sendMessage('7885972832:AAHsu-ttVH9h0QW0CLyndcMxEGe44aCdrh4', '-1002649512007', 'Product Type: '+ body.name + ' has been created.'); 
 
     // ===>> Return to Client
     return dataFormat;
@@ -82,11 +85,9 @@ export class ProductTypeService {
   ): Promise<any> {
 
     // Check if submitted data is valide. 
-    const data = await ProductType.findByPk(id, {
-      attributes: ["id", "name", "image", "updated_at"],
-    }); 
+    const checkedData = await ProductType.findByPk(id); 
 
-    if(!data){
+    if(!checkedData){
       throw new NotFoundException("Product Type is not found.");
     }
 
@@ -104,17 +105,19 @@ export class ProductTypeService {
 
     }
 
-    // Save the update data to DB. 
+    // Save the updated data to DB. 
     await ProductType.update(body, {
       where: { id: id },
     });
 
+    // get the updated data from DB
+    const data = await ProductType.findByPk(id); 
     
     // Prepare response format. 
     const dataFormat = {
       data    : data,
       message : "Product type has been updated.",
-    } as { data: ProductType; message: string };
+    };
 
     // return back to client
     return dataFormat;
@@ -125,11 +128,9 @@ export class ProductTypeService {
   async delete(id: number): Promise<any> {
 
     // Check if submitted data is valide. 
-    const data = await ProductType.findByPk(id, {
-      attributes: ["id", "name", "image", "updated_at"],
-    }); 
+    const checkedData = await ProductType.findByPk(id); 
 
-    if(!data){
+    if(!checkedData){
       throw new NotFoundException("Product Type is not found.");
     }
 
@@ -143,8 +144,9 @@ export class ProductTypeService {
 
   }
 
-
+  // for checking if a string is realy base64
   private _isBase64(input: string): boolean {
+
     if (!input || typeof input !== 'string') return false;
 
     // If input is a data URI (e.g., data:image/png;base64,...), extract the Base64 part
@@ -160,6 +162,7 @@ export class ProductTypeService {
     const base64Regex = /^[A-Za-z0-9+/]+={0,2}$/;
 
     return base64Regex.test(trimmed);
+
   }
 
 }

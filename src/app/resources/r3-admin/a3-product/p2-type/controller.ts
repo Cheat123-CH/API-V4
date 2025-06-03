@@ -4,8 +4,6 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseIntPip
 // ===========================================================================>> Custom Library
 
 import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
-
-import ProductType             from "@app/models/product/type.model";
 import { ProductTypeService }  from "./service";
 
 @Controller()
