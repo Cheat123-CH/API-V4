@@ -1,11 +1,8 @@
 // ===========================================================================>> Core Library
-import {
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
 // ===========================================================================>> Third party Library
-import { Op, Sequelize } from "sequelize";
+import { Sequelize } from "sequelize";
 
 // ===========================================================================>> Custom Library
 import { TelegramService }                              from "@app/resources/r4-testing/third-party/telegram/service";
