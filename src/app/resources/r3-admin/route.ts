@@ -13,19 +13,22 @@ export const adminRoutes: Routes = [
         path: 'dashboard',
         module: DashboardModule
     },
+    
     {
         path: 'sales',
         module: SaleModule
     },
+    
     {
         path: 'products',
         module: ProductModule
     },
+
     {
-        path: 'products/types',
+        path: 'product/types',
         module: ProductTypeModule
     },
-   
+
     {
         path: 'users',
         module: UserModule

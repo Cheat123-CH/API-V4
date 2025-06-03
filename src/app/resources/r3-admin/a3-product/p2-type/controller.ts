@@ -16,7 +16,7 @@ export class ProductTypeController {
   ){}
 
   // =============================================>> Get Data or Read
-  @Get("data")
+  @Get()
   async getData(){
 
     return await this._service.getData();
@@ -27,7 +27,7 @@ export class ProductTypeController {
   @Post()
   async create(
     @Body() body: CreateProductTypeDto
-  ): Promise<{ data: ProductType; message: string }> {
+  ){
     return await this._service.create(body);
   }
 
@@ -36,14 +36,13 @@ export class ProductTypeController {
   async update(
     @Param("id", ParseIntPipe) id: number,
     @Body() body: UpdateProductTypeDto
-  ): Promise<any> {
+  ){
     return this._service.update(body, id);
   }
 
   // =============================================>> Delete
   @Delete(":id")
-  @HttpCode(HttpStatus.OK)
-  async delete(@Param("id") id: number): Promise<{ message: string }> {
+  async delete(@Param("id") id: number) {
     return await this._service.delete(id);
   }
 }
