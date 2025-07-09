@@ -5,17 +5,16 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { col, literal, Op, OrderItem } from 'sequelize';
 
 // ===========================================================================>> Costom Library
-import OrderDetails from '@app/models/order/detail.model';
-import Order from '@app/models/order/order.model';
-import User from '@app/models/user/user.model';
-import { FileService } from 'src/app/services/file.service';
-import Product from 'src/app/models/product/product.model';
-import ProductType from 'src/app/models/product/type.model';
-import { CreateProductDto, UpdateProductDto } from './dto';
-import { List } from './interface';
-import { Fn, Col, Literal } from 'sequelize/types/utils';
-import { of } from 'rxjs';
-export type Orders = Fn | Col | Literal | OrderItem[];
+import OrderDetails                             from '@app/models/order/detail.model';
+import Order                                    from '@app/models/order/order.model';
+import User                                     from '@app/models/user/user.model';
+import { FileService }                          from 'src/app/services/file.service';
+import Product                                  from 'src/app/models/product/product.model';
+import ProductType                              from 'src/app/models/product/type.model';
+import { CreateProductDto, UpdateProductDto }   from './dto';
+import { List }                                 from './interface';
+import { Fn, Col, Literal }                     from 'sequelize/types/utils';
+export type Orders                              = Fn | Col | Literal | OrderItem[];
 
 @Injectable()
 export class ProductService {
@@ -50,15 +49,15 @@ export class ProductService {
 
     async getData(
         params?: {
-            page: number;
-            limit: number;
-            key?: string;
-            type?: number;
-            creator?: number;
-            startDate?: string;
-            endDate?: string;
-            sort_by?: string;
-            order?: string;
+            page        : number;
+            limit       : number;
+            key?        : string;
+            type?       : number;
+            creator?    : number;
+            startDate?  : string;
+            endDate?    : string;
+            sort_by?    : string;
+            order?      : string;
         }
     ) {
         try {
@@ -66,9 +65,9 @@ export class ProductService {
             const offset = (params?.page - 1) * params?.limit;
     
             const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
-                const date = new Date(dateString);
-                const utcOffset = 7 * 60; // UTC+7 offset in minutes
-                const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
+                const date        = new Date(dateString);
+                const utcOffset   = 7 * 60; // UTC+7 offset in minutes
+                const localDate   = new Date(date.getTime() + utcOffset * 60 * 1000);
     
                 if (isEndOfDay) {
                     localDate.setHours(23, 59, 59, 999); // End of day
