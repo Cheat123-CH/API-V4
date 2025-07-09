@@ -2,12 +2,14 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UsePipes } from '@nestjs/common';
 
 // ===========================================================================>> Costom Library
-import UserDecorator from '@app/core/decorators/user.decorator';
-import { ProductTypeExistsPipe } from '@app/core/pipes/product.pipe';
-import User from '@app/models/user/user.model';
-import Product from 'src/app/models/product/product.model';
-import { CreateProductDto, UpdateProductDto } from './dto';
-import { ProductService } from './service';
+import UserDecorator                            from '@app/core/decorators/user.decorator';
+import { ProductTypeExistsPipe }                from '@app/core/pipes/product.pipe';
+
+import User                                     from '@app/models/user/user.model';
+import Product                                  from '@app/models/product/product.model';
+
+import { CreateProductDto, UpdateProductDto }   from './dto';
+import { ProductService }                       from './service';
 @Controller()
 export class ProductController {
 
@@ -33,9 +35,9 @@ export class ProductController {
     ) {
 
         // Set defaul value if not defined. 
-        page = !page   ?   10   : page;
-        limit = !limit ?   10   : limit;
-        key = key === undefined ? null : key;
+        page    = !page     ?   10   : page;
+        limit   = !limit    ?   10   : limit;
+        key     = key === undefined ? null : key;
 
         const params = {
             page,limit, key, type, creator, startDate, endDate, sort_by, order,
