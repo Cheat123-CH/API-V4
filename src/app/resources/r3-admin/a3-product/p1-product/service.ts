@@ -5,7 +5,6 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { col, literal, Op, OrderItem } from 'sequelize';
 
 // ===========================================================================>> Costom Library
-<<<<<<< HEAD
 import OrderDetails from '@app/models/order/detail.model';
 import Order from '@app/models/order/order.model';
 import User from '@app/models/user/user.model';
@@ -15,18 +14,6 @@ import ProductType from 'src/app/models/product/type.model';
 import { FileService } from 'src/app/services/file.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
 export type Orders = Fn | Col | Literal | OrderItem[];
-=======
-import OrderDetails                             from '@app/models/order/detail.model';
-import Order                                    from '@app/models/order/order.model';
-import User                                     from '@app/models/user/user.model';
-import { FileService }                          from 'src/app/services/file.service';
-import Product                                  from 'src/app/models/product/product.model';
-import ProductType                              from 'src/app/models/product/type.model';
-import { CreateProductDto, UpdateProductDto }   from './dto';
-import { List }                                 from './interface';
-import { Fn, Col, Literal }                     from 'sequelize/types/utils';
-export type Orders                              = Fn | Col | Literal | OrderItem[];
->>>>>>> 065b26a63fc6d81ff95d57f5c4af93613e25d507
 
 @Injectable()
 export class ProductService {
