@@ -8,13 +8,11 @@ import { col, literal, Op, OrderItem } from 'sequelize';
 import OrderDetails from '@app/models/order/detail.model';
 import Order from '@app/models/order/order.model';
 import User from '@app/models/user/user.model';
-import { FileService } from 'src/app/services/file.service';
+import { Col, Fn, Literal } from 'sequelize/types/utils';
 import Product from 'src/app/models/product/product.model';
 import ProductType from 'src/app/models/product/type.model';
+import { FileService } from 'src/app/services/file.service';
 import { CreateProductDto, UpdateProductDto } from './dto';
-import { List } from './interface';
-import { Fn, Col, Literal } from 'sequelize/types/utils';
-import { of } from 'rxjs';
 export type Orders = Fn | Col | Literal | OrderItem[];
 
 @Injectable()
@@ -23,9 +21,9 @@ export class ProductService {
     constructor(private readonly fileService: FileService) { };
 
     // Method to retrieve the setup data for product types
-    async getSetupData():Promise<any> {
+    async getSetupData(): Promise<any> {
         // Fetch product types
-       try {
+        try {
             const productTypes = await ProductType.findAll({
                 attributes: ['id', 'name'],
             });
@@ -34,18 +32,18 @@ export class ProductService {
             const users = await User.findAll({
                 attributes: ['id', 'name'],
             });
-        return {
-            productTypes,
-            users,
-        };
-       } catch (error) {
-           console.error('Error in setup method:', error); // Log the error for debugging
-           return {
-               status: 'error',
-               message: 'products/setup',
-           };
-        
-       }
+            return {
+                productTypes,
+                users,
+            };
+        } catch (error) {
+            console.error('Error in setup method:', error); // Log the error for debugging
+            return {
+                status: 'error',
+                message: 'products/setup',
+            };
+
+        }
     }
 
     async getData(
@@ -64,76 +62,77 @@ export class ProductService {
         try {
             // Calculate offset for pagination
             const offset = (params?.page - 1) * params?.limit;
-    
+
+            // Helper to convert to UTC+7 (Cambodia time)
             const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
                 const date = new Date(dateString);
                 const utcOffset = 7 * 60; // UTC+7 offset in minutes
                 const localDate = new Date(date.getTime() + utcOffset * 60 * 1000);
-    
+
                 if (isEndOfDay) {
                     localDate.setHours(23, 59, 59, 999); // End of day
                 } else {
                     localDate.setHours(0, 0, 0, 0); // Start of day
                 }
+
                 return localDate;
             };
-    
-            // Calculate start and end dates for the filter
+
+            // Prepare date range
             const start = params?.startDate ? toCambodiaDate(params.startDate) : null;
             const end = params?.endDate ? toCambodiaDate(params.endDate, true) : null;
-    
-            // Construct the `where` clause
-            const where: any = {
-                ...(params?.key
-                    ? {
-                          [Op.or]: [
-                              { code: { [Op.iLike]: `%${params?.key}%` } },
-                              { name: { [Op.iLike]: `%${params?.key}%` } },
-                          ],
-                      }
-                    : {}),
-                ...(params.type ? { type_id: Number(params.type) } : {}),
-                ...(params.creator ? { creator_id: Number(params.creator) } : {}),
-                ...(start && end ? { created_at: { [Op.between]: [start, end] } } : {}),
-            };
 
+            // Construct WHERE clause
+            const where: any = {};
 
-            if(params?.type){
-                where["type_id"] = params.type;
+            if (params?.key) {
+                where[Op.or] = [
+                    { code: { [Op.iLike]: `%${params.key}%` } },
+                    { name: { [Op.iLike]: `%${params.key}%` } },
+                ];
             }
 
-            
-            if(params?.creator){
-                where["creator_id"] = params.creator;
+            if (params?.type) {
+                where.type_id = Number(params.type);
             }
-    
-            const sortFieldProcessed = params?.sort_by || 'id'; // Default sorting by 'id'
-            const sortOrderProcessed = ['ASC', 'DESC'].includes((params?.order || 'DESC').toUpperCase())
+
+            if (params?.creator) {
+                where.creator_id = Number(params.creator);
+            }
+
+            // Smart date range logic
+            if (start && end) {
+                where.created_at = { [Op.between]: [start, end] };
+            } else if (start) {
+                where.created_at = { [Op.gte]: start };
+            } else if (end) {
+                where.created_at = { [Op.lte]: end };
+            }
+
+            // Sorting
+            const sortField = params?.sort_by || 'name';
+            const sortOrder = ['ASC', 'DESC'].includes((params?.order || 'DESC').toUpperCase())
                 ? params?.order.toUpperCase()
                 : 'DESC';
-    
+
             const sort: Orders = [];
-            let additionalWhere: any = {};
-    
-            switch (sortFieldProcessed) {
-                // case 'type_id':
-                //     sort.push([col('type_id'), sortOrderProcessed]);
-                //     break;
+
+            switch (sortField) {
                 case 'name':
-                    sort.push([col('name'), sortOrderProcessed]);
+                    sort.push([col('name'), sortOrder]);
                     break;
                 case 'unit_price':
-                    sort.push([col('unit_price'), sortOrderProcessed]);
+                    sort.push([col('unit_price'), sortOrder]);
                     break;
                 case 'total_sale':
-                    sort.push([literal('"total_sale"'), sortOrderProcessed]);
+                    sort.push([literal('"total_sale"'), sortOrder]);
                     break;
                 default:
-                    sort.push([sortFieldProcessed, sortOrderProcessed]);
+                    sort.push([sortField, sortOrder]);
                     break;
             }
-    
-            // Retrieve products with associated product types and users
+
+            // Run query
             const { rows, count } = await Product.findAndCountAll({
                 attributes: [
                     'id',
@@ -144,10 +143,10 @@ export class ProductService {
                     'created_at',
                     [
                         literal(`(
-                        SELECT SUM(qty) 
-                        FROM order_details AS od 
+                        SELECT SUM(qty)
+                        FROM order_details AS od
                         WHERE od.product_id = "Product"."id"
-                        )`),
+                    )`),
                         'total_sale',
                     ],
                 ],
@@ -166,20 +165,16 @@ export class ProductService {
                         attributes: ['id', 'name', 'avatar'],
                     },
                 ],
-                where: { ...where, ...additionalWhere },
-                distinct: true, //  unique rows are counted
-                offset: offset,
-                order: sort,
+                where,
+                distinct: true,
+                offset,
                 limit: params?.limit,
+                order: sort,
             });
-    
-            // Calculate the total pages based on the total count
+
+            // Pagination info
             const totalPages = Math.ceil(count / params?.limit);
-            // console.log('totalPages', totalPages);
-            // console.log('count', count);
-    
-            // Format the response data
-            const dataFormat: List = {
+            return {
                 status: 'success',
                 data: rows,
                 pagination: {
@@ -189,17 +184,16 @@ export class ProductService {
                     total: count,
                 },
             };
-    
-            return dataFormat;
         } catch (error) {
-            console.error('Error in listing method:', error); // Log the error for debugging
+            console.error('Error in getData:', error);
             return {
                 status: 'error',
                 message: 'products/getData',
             };
         }
     }
-    
+
+
 
     async view(product_id: number) {
         const where: any = {

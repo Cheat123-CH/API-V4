@@ -20,27 +20,30 @@ export class ProductController {
 
     @Get('/')
     async getData(
-        
-        @Query('page')              page?       : number,
-        @Query('limit')             limit?      : number,
-        @Query('key')               key?        : string,
-        @Query('type')              type?       : number,
-        @Query('creator')           creator?    : number,
-        @Query('startDate')         startDate?  : string,
-        @Query('endDate')           endDate?    : string,
-        @Query('sort_by')           sort_by?    : string,
-        @Query('order')             order?      : string
+
+        @Query('page') page?: number,
+        @Query('limit') limit?: number,
+        @Query('key') key?: string,
+        @Query('type') type?: number,
+        @Query('creator') creator?: number,
+        @Query('startDate') startDate?: string,
+        @Query('endDate') endDate?: string,
+        @Query('sort_by') sort_by?: string,
+        @Query('order') order?: string
     ) {
 
         // Set defaul value if not defined. 
-        page = !page   ?   10   : page;
-        limit = !limit ?   10   : limit;
+        page = !page ? 1 : page;
+        limit = !limit ? 10 : limit;
         key = key === undefined ? null : key;
+        sort_by = sort_by ?? 'name';
+        order = order?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
 
         const params = {
-            page,limit, key, type, creator, startDate, endDate, sort_by, order,
+            page, limit, key, type, creator, startDate, endDate, sort_by, order,
         }
 
+        console.log(params)
         return await this._service.getData(params);
     }
 
