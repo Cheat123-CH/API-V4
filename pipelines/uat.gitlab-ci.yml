@@ -12,7 +12,7 @@ deploy:
     # - /^v-.*-release$/
     - uat
   before_script:
-    - source "${CAMCYBER_UAT_ENVIRONMENT}"
+    - source "${POS_ENVIRONMENT}"
   script:
     - echo $CI_COMMIT_REF_NAME
     - bash -e scripts/deploy.sh
