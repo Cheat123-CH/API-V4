@@ -106,7 +106,7 @@
             # TELEGRAM_LOGGER_CHAT_ID    : "{{ TELEGRAM_LOGGER_CHAT_ID }}"
 
           ports:
-            - "9003:3000"
+            - "8990:3000"
           networks:
             - camcyber
       volumes:

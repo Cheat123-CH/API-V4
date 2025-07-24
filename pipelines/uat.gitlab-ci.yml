@@ -5,14 +5,14 @@ deploy:
     SERVICE_TYPE: api-v4
     SERVICE_NAMESPACE: ${PROJECT_NAME}/${SERVICE_TYPE}
     ENABLED_BUILD: "true"
-    IP_ADDRESS: "109.123.234.230"
+    IP_ADDRESS: "109.123.237.239"
   environment:
     name: "CamCyber/${PROJECT_NAME}/Development"
   only:
     # - /^v-.*-release$/
     - uat
   before_script:
-    - source "${TEST_ENVIRONMENT}"
+    - source "${CAMCYBER_UAT_ENVIRONMENT}"
   script:
     - echo $CI_COMMIT_REF_NAME
     - bash -e scripts/deploy.sh
