@@ -16,7 +16,7 @@ export class ProductTypeController {
   // =============================================>> Get Data or Read
   @Get()
   async getData(){
-
+   
     return await this._service.getData();
 
   }
