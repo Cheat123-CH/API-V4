@@ -6,9 +6,11 @@ import {
 } from "@nestjs/common";
 
 // ===========================================================================>> Third party Library
-import { Op, Sequelize } from "sequelize";
+import { Sequelize } from "sequelize";
 
 // ===========================================================================>> Custom Library
+import { TelegramService } from "@app/resources/r4-testing/third-party/telegram/service";
+
 import { FileService } from "@app/services/file.service";
 import Product from "@app/models/product/product.model";
 import ProductType from "@app/models/product/type.model";
@@ -16,7 +18,10 @@ import { CreateProductTypeDto, UpdateProductTypeDto } from "./dto";
 
 @Injectable()
 export class ProductTypeService {
-  constructor(private readonly fileService: FileService) {}
+  constructor(
+    private readonly _fileService: FileService,
+    private readonly _telegramService: TelegramService
+  ) {}
 
   // ==========================================>> get data
   async getData() {
@@ -35,11 +40,11 @@ export class ProductTypeService {
         include: [
           {
             model: Product,
-            attributes: [], // We don't need any product attributes, just the count
+            attributes: [],
           },
         ],
-        group: ["ProductType.id"], // Group by the ProductType id
-        order: [["name", "ASC"]], // Order by name
+        group: ["ProductType.id"],
+        order: [["name", "ASC"]],
       });
 
       return {
@@ -51,117 +56,109 @@ export class ProductTypeService {
   }
 
   // ==========================================>> create
-  async create(
-    body: CreateProductTypeDto
-  ): Promise<{ data: ProductType; message: string }> {
-    const checkExistName = await ProductType.findOne({
-      where: { name: body.name },
-    });
-    if (checkExistName) {
-      throw new BadRequestException("ឈ្មោះនេះមានក្នុងប្រព័ន្ធ");
-    }
-    const result = await this.fileService.uploadBase64Image(
-      "product",
-      body.image
+  async create(body: CreateProductTypeDto): Promise<any> {
+    // ===>> Upload Image
+    const result = await this._fileService.uploadBase64Image(
+      "productType", // Folder Name
+      body.image // the image as base64 from client
     );
-    if (result.error) {
-      throw new BadRequestException(result.error);
-    }
-    // Replace base64 string by file URI from FileService
-    body.image = result.file.uri;
 
+    // ===>> Save to DB
     // Save to DB
-    const productType = await ProductType.create({
+    const data = await ProductType.create({
       name: body.name,
-      image: "abc",
+      image: result.data.uri,
     });
 
     // Respon
+    // ===>> Prepare format to Client
     const dataFormat = {
-      data: productType,
+      data: data,
       message: "Product type has been created.",
-    } as { data: ProductType; message: string };
+    };
 
+    // ===>> Send to TG
+    // await this._telegramService.sendMessage('7885972832:AAHsu-ttVH9h0QW0CLyndcMxEGe44aCdrh4', '-1002649512007', 'Product Type: '+ body.name + ' has been created.');
+
+    // ===>> Return to Client
     return dataFormat;
   }
 
   // ==========================================>> update
-  async update(
-    body: UpdateProductTypeDto,
-    id: number
-  ): Promise<{ data: ProductType; message: string }> {
-    const checkExist = await ProductType.findByPk(id);
-    if (!checkExist) {
-      throw new BadRequestException("គ្មានទិន្នន័យនៅក្នុងប្រព័ន្ធ");
+  async update(body: UpdateProductTypeDto, id: number): Promise<any> {
+    // Check if submitted data is valide.
+    const checkedData = await ProductType.findByPk(id);
+
+    if (!checkedData) {
+      throw new NotFoundException("Product Type is not found.");
     }
-    if (body.image) {
-      const result = await this.fileService.uploadBase64Image(
-        "product",
-        body.image
+
+    // Check if Image is submitted.
+    if (this._isBase64(body.image)) {
+      // Upload the image to file service.
+      const result = await this._fileService.uploadBase64Image(
+        "productType", // Folder Name
+        body.image // the image as base64 from client
       );
-      if (result.error) {
-        throw new BadRequestException(result.error);
-      }
-      // Replace base64 string by file URI from FileService
-      body.image = result.file.uri;
-    } else {
-      body.image = undefined;
+
+      // Update the body.image from base64 to uri.
+      body.image = result.data.uri;
     }
-    const checkExistName = await ProductType.findOne({
-      where: {
-        id: { [Op.not]: id },
-        name: body.name,
-      },
-    });
-    if (checkExistName) {
-      throw new BadRequestException("ឈ្មោះនេះមានក្នុងប្រព័ន្ធ");
-    }
+
+    // Save the updated data to DB.
     await ProductType.update(body, {
       where: { id: id },
     });
 
+    // get the updated data from DB
+    const data = await ProductType.findByPk(id);
+
+    // Prepare response format.
     const dataFormat = {
-      data: await ProductType.findByPk(id, {
-        attributes: ["id", "name", "image", "updated_at"],
-      }),
-      message: "Product type has been created.",
-    } as { data: ProductType; message: string };
+      data: data,
+      message: "Product type has been updated.",
+    };
+
+    // return back to client
     return dataFormat;
   }
 
   // ==========================================>> delete
-  async delete(id: number): Promise<{ message: string }> {
-    try {
-      // Check if there are associated products
-      const productsCount = await Product.count({
-        where: {
-          type_id: id,
-        },
-      });
+  async delete(id: number): Promise<any> {
+    // Check if submitted data is valide.
+    const checkedData = await ProductType.findByPk(id);
 
-      if (productsCount > 0) {
-        throw new BadRequestException(
-          "Cannot delete. Products are associated with this ProductType."
-        );
-      }
-
-      // No associated products, proceed with deletion
-      const rowsAffected = await ProductType.destroy({
-        where: {
-          id: id,
-        },
-      });
-
-      if (rowsAffected === 0) {
-        throw new NotFoundException("Products type not found.");
-      }
-
-      return { message: "Data has been deleted successfully." };
-    } catch (error) {
-      throw new BadRequestException(
-        error.message ?? "Something went wrong!. Please try again later.",
-        "Error Delete"
-      );
+    if (!checkedData) {
+      throw new NotFoundException("Product Type is not found.");
     }
+
+    // Delete from DB.
+    await ProductType.destroy({
+      where: { id: id },
+    });
+
+    // Response back to client
+    return { message: "Data has been deleted successfully." };
+  }
+
+  // for checking if a string is realy base64
+  private _isBase64(input: string): boolean {
+    if (!input || typeof input !== "string") return false;
+
+    // If input is a data URI (e.g., data:image/png;base64,...), extract the Base64 part
+    const base64Part = input.includes("base64,")
+      ? input.split("base64,")[1]
+      : input;
+
+    // Remove any surrounding whitespace
+    const trimmed = base64Part.trim();
+
+    // Must be length divisible by 4
+    if (trimmed.length % 4 !== 0) return false;
+
+    // Validate using regex
+    const base64Regex = /^[A-Za-z0-9+/]+={0,2}$/;
+
+    return base64Regex.test(trimmed);
   }
 }

@@ -16,6 +16,7 @@ import { CashierModule } from './resources/r2-cashier/module';
 import { UtilsModule } from './utils/utils.module';
 
 import { BasicModule } from './resources/r4-testing/basic/module';
+import { FileModule } from './resources/r4-testing/file-service/module';
 import { ReportJSModule } from './resources/r4-testing/third-party/report/module';
 import { SMSModule } from './resources/r4-testing/third-party/sms/module';
 import { TelegramModule } from './resources/r4-testing/third-party/telegram/module';
@@ -44,6 +45,7 @@ import { TelegramModule } from './resources/r4-testing/third-party/telegram/modu
 
         //===================== Testing
         BasicModule,
+        FileModule,
         TelegramModule,
         SMSModule,
         ReportJSModule,

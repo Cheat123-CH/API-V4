@@ -1,11 +1,8 @@
 // ===========================================================================>> Custom Library
 import { IsBase64Image } from "@app/core/decorators/base64-image.decorator";
-import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateProductTypeDto {
-  @IsString()
-  @IsNotEmpty()
-  name: string;
+export class FileDto {
 
   @IsString()
   @IsNotEmpty()
@@ -13,17 +10,10 @@ export class CreateProductTypeDto {
     message: "Invalid image format. Image must be base64 encoded JPEG or PNG.",
   })
   image: string;
-}
 
-export class UpdateProductTypeDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  folder: string;
 
-  @IsString()
-  @IsOptional()
-  @IsBase64Image({
-    message: "Invalid image format. Image must be base64 encoded JPEG or PNG.",
-  })
-  image: string;
+ 
 }

@@ -26,19 +26,19 @@ export class ProfileService {
         try {
             // Check if avatar is provided and it's not already a file URI (i.e., it's a base64 string)
             if (body.avatar && !body.avatar.startsWith('upload/file/')) {
-                if (this.isValidBase64(body.avatar)) {
-                    // Upload the base64 avatar image
-                    const result = await this.fileService.uploadBase64Image('user', body.avatar);
-                    if (result.error) {
-                        // Throw an error if the upload fails
-                        throw new BadRequestException(result.error);
-                    }
-                    // Replace the base64 string with the file URI from the file service
-                    body.avatar = result.file?.uri;
-                } else {
-                    // Throw an error if the base64 image format is invalid
-                    throw new BadRequestException('Invalid image format');
-                }
+                // if (this.isValidBase64(body.avatar)) {
+                //     // Upload the base64 avatar image
+                //     const result = await this.fileService.uploadBase64Image('user', body.avatar);
+                //     if (result.error) {
+                //         // Throw an error if the upload fails
+                //         throw new BadRequestException(result.error);
+                //     }
+                //     // Replace the base64 string with the file URI from the file service
+                //     body.avatar = result.file?.uri;
+                // } else {
+                //     // Throw an error if the base64 image format is invalid
+                //     throw new BadRequestException('Invalid image format');
+                // }
             }
 
             // Update the user's information (including avatar, if applicable)

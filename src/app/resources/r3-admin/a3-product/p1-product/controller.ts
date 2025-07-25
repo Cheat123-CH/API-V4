@@ -4,8 +4,10 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, U
 // ===========================================================================>> Costom Library
 import UserDecorator from '@app/core/decorators/user.decorator';
 import { ProductTypeExistsPipe } from '@app/core/pipes/product.pipe';
+
+import Product from '@app/models/product/product.model';
 import User from '@app/models/user/user.model';
-import Product from 'src/app/models/product/product.model';
+
 import { CreateProductDto, UpdateProductDto } from './dto';
 import { ProductService } from './service';
 @Controller()
@@ -20,27 +22,30 @@ export class ProductController {
 
     @Get('/')
     async getData(
-        
-        @Query('page')              page?       : number,
-        @Query('limit')             limit?      : number,
-        @Query('key')               key?        : string,
-        @Query('type')              type?       : number,
-        @Query('creator')           creator?    : number,
-        @Query('startDate')         startDate?  : string,
-        @Query('endDate')           endDate?    : string,
-        @Query('sort_by')           sort_by?    : string,
-        @Query('order')             order?      : string
+
+        @Query('page') page?: number,
+        @Query('limit') limit?: number,
+        @Query('key') key?: string,
+        @Query('type') type?: number,
+        @Query('creator') creator?: number,
+        @Query('startDate') startDate?: string,
+        @Query('endDate') endDate?: string,
+        @Query('sort_by') sort_by?: string,
+        @Query('order') order?: string
     ) {
 
         // Set defaul value if not defined. 
-        page = !page   ?   10   : page;
-        limit = !limit ?   10   : limit;
+        page = !page ? 1 : page;
+        limit = !limit ? 10 : limit;
         key = key === undefined ? null : key;
+        sort_by = sort_by ?? 'name';
+        order = order?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
 
         const params = {
-            page,limit, key, type, creator, startDate, endDate, sort_by, order,
+            page, limit, key, type, creator, startDate, endDate, sort_by, order,
         }
 
+        console.log(params)
         return await this._service.getData(params);
     }
 
