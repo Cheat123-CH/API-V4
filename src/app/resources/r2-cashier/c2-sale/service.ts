@@ -7,7 +7,7 @@ import {
 
 // ===========================================================================>> Third party Library
 import { Op, Sequelize } from "sequelize";
-// ===========================================================================>> Costom Library
+// ===========================================================================>> Custom Library
 import OrderDetails from "@app/models/order/detail.model";
 import Product from "@app/models/product/product.model";
 import ProductType from "@app/models/product/type.model";
@@ -27,7 +27,7 @@ export class SaleService {
 
   async getData(
     userId: number,
-    page_size: number = 10,
+    limit: number = 10, // Changed from page_size to limit
     page: number = 1,
     key?: string,
     platform?: string,
@@ -37,7 +37,7 @@ export class SaleService {
     order?: "ASC" | "DESC"
   ) {
     try {
-      const offset = (page - 1) * page_size;
+      const offset = (page - 1) * limit; // Updated to use limit
 
       // Helper function to convert date to Cambodia's timezone (UTC+7)
       const toCambodiaDate = (dateString: string, isEndOfDay = false): Date => {
@@ -118,7 +118,7 @@ export class SaleService {
         ],
         where: where,
         order: [[sortField, orderDirection]], // Use the validated sort parameters
-        limit: page_size,
+        limit: limit, // Updated to use limit
         offset,
       });
 
@@ -126,14 +126,14 @@ export class SaleService {
         where: where,
       });
 
-      const totalPages = Math.ceil(totalCount / page_size);
+      const totalPages = Math.ceil(totalCount / limit); // Updated to use limit
 
       const dataFormat: List = {
         status: "success",
         data: data,
         pagination: {
           page: page,
-          limit: page_size,
+          limit: limit, // Updated to use limit
           totalPage: totalPages,
           total: totalCount,
         },

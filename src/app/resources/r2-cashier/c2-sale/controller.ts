@@ -26,8 +26,8 @@ export class SaleController {
   @Get()
   async getAllSale(
     @UserDecorator() auth: User,
-    @Query("page_size") page_size?: number,
     @Query("page") page?: number,
+    @Query("limit") limit?: number,
     @Query("key") key?: string,
     @Query("platform") platform?: string,
     @Query("startDate") startDate?: string,
@@ -35,25 +35,23 @@ export class SaleController {
     @Query("sort") sort?: "ordered_at" | "total_price",
     @Query("order") order?: "ASC" | "DESC"
   ) {
-    if (!page_size) {
-      page_size = 10;
-    }
-    if (!page) {
-      page = 1;
-    }
+    // Set default values if not provided
+    page = !page ? 1 : page;
+    limit = !limit ? 10 : limit;
 
     return await this._service.getData(
       auth.id,
-      page_size,
+      limit,
       page,
       key,
       platform,
       startDate,
       endDate,
-      sort, 
+      sort,
       order
     );
   }
+
   @Get(":id/view")
   async view(@Param("id") id: number) {
     return await this._service.view(id);
