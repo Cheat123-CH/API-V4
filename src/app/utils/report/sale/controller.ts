@@ -19,7 +19,7 @@ export class SaleReportController {
         @Query('endDate') endDate: string,
         @Query('report_type') report_type: string
     ) {
-        console.log('report_type', report_type);
+        // console.log('report_type', report_type);
         return this._service.generate(auth.id, startDate, endDate, report_type);
     }
 }
