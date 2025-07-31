@@ -45,7 +45,7 @@ export class ProductController {
             page, limit, key, type, creator, startDate, endDate, sort_by, order,
         }
 
-        console.log(params)
+        // console.log(params)
         return await this._service.getData(params);
     }
 
