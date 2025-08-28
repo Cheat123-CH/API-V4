@@ -11,12 +11,13 @@ import { ExceptionErrorsFilter } from './core/exceptions/errors.filter';
 import { TimeoutInterceptor } from './core/interceptors/timeout.interceptor';
 import { JwtMiddleware } from './core/middlewares/jwt.middleware';
 import { AccountModule } from './resources/r1-account/module';
-import { AdminModule } from './resources/r3-admin/module';
 import { CashierModule } from './resources/r2-cashier/module';
+import { AdminModule } from './resources/r3-admin/module';
 import { UtilsModule } from './utils/utils.module';
 
 import { BasicModule } from './resources/r4-testing/basic/module';
 import { FileModule } from './resources/r4-testing/file-service/module';
+import { MyProfileModule } from './resources/r4-testing/my-profile/my_profile.module';
 import { ReportJSModule } from './resources/r4-testing/third-party/report/module';
 import { SMSModule } from './resources/r4-testing/third-party/sms/module';
 import { TelegramModule } from './resources/r4-testing/third-party/telegram/module';
@@ -49,6 +50,7 @@ import { TelegramModule } from './resources/r4-testing/third-party/telegram/modu
         TelegramModule,
         SMSModule,
         ReportJSModule,
+        MyProfileModule,
 
         //===================== END OF ROLE USER
         RouterModule.register(appRoutes)

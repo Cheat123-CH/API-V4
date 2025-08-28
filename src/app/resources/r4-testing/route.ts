@@ -2,18 +2,17 @@
 import { Routes } from '@nestjs/core';
 
 // ===========================================================================>> Custom Library
-import { BasicModule } from './basic/module';
 import { FileModule } from './file-service/module';
 
-import { SMSModule } from './third-party/sms/module';
+import { BasicModule } from './basic/module';
+import { MyProfileModule } from './my-profile/my_profile.module';
 import { TelegramModule } from './third-party/telegram/module';
-import { ReportJSModule } from './third-party/report/module';
 
 export const testingRoutes: Routes = [
-    // {
-    //     path: 'basic',
-    //     module: BasicModule
-    // }, 
+    {
+        path: 'basic',
+        module: BasicModule
+    }, 
 
     {
         path: 'upload',
@@ -23,6 +22,10 @@ export const testingRoutes: Routes = [
     {
         path: 'telegram',
         module: TelegramModule
+    }, 
+    {
+        path: 'my-profile',
+        module: MyProfileModule
     }, 
     // {
     //     path: 'sms',
