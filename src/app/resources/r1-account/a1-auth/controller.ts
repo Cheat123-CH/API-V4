@@ -8,7 +8,7 @@ import User from '@app/models/user/user.model';
 import { LoginRequestDto, LoginRequestOTPDto } from './dto';
 import { AuthService } from './service';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
 
     constructor(private readonly authService: AuthService) { }
