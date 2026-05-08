@@ -69,7 +69,13 @@ export class AuthService {
         user.last_login = new Date();
         await user.save();
 
-        const deviceInfo = req['deviceInfo'];
+        const deviceInfo = req['deviceInfo'] || {
+            ip: 'unknown',
+            browser: 'unknown',
+            os: 'unknown',
+            platform: 'Web',
+            timestamp: new Date()
+        };
 
         // Store the login log in users_logs table
         await UsersLogs.create({
