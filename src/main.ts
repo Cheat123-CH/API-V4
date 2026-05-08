@@ -66,4 +66,4 @@ class AppInitializer {
 }
 
 const appInitializer = new AppInitializer();
-appInitializer.start(Number(process.env.PORT) || 3000);
+appInitializer.start(Number(process.env.PORT) || 10000);
