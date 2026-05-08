@@ -47,13 +47,9 @@ export class AuthService {
                 ],
                 include: [Role]
             });
-        } catch (error) {
-            console.error(error);
-            if (error instanceof DatabaseError && error.message.includes('invalid identifier')) {
-                throw new BadRequestException('Invalid input data or database error', 'Database Error');
-            } else {
-                throw new BadRequestException('Server database error', 'Database Error');
-            }
+        } catch (error : any) {
+            console.error('DB ERROR:', error.message);
+            throw new BadRequestException(error.message, 'Database Error');
         }
         if (!user) {
             throw new BadRequestException('Invalid credentials');
