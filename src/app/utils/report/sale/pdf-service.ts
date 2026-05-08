@@ -5,6 +5,7 @@ import { BadRequestException, Injectable, RequestTimeoutException } from "@nestj
 // ===> custom library
 import OrderDetails from "@app/models/order/detail.model";
 import Order        from "@app/models/order/order.model";
+import Product      from "@app/models/product/product.model";
 import User         from "@app/models/user/user.model";
 
 // ===> third party library
@@ -23,12 +24,13 @@ export class SalePDFReportService {
         endDate: string,
         userId: number
     ) {
+        const hasDateFilter = Boolean(startDate || endDate);
         const { start, end } = this.getStartAndEndDateInCambodia(
             startDate || this.getCurrentDate(),
             endDate || this.getCurrentDate()
         );
         const user = await this.fetchUser(userId);
-        const orders = await this.fetchOrders(start, end);
+        const orders = await this.fetchOrders(start, end, hasDateFilter);
 
         const sumTotalPrice = this.calculateTotal(orders, 'total_price');
         const formattedOrders = this.formatOrderData(orders);
@@ -47,15 +49,22 @@ export class SalePDFReportService {
         return user;
     }
     // ===> Method to fetch orders
-    private async fetchOrders(startDate: Date, endDate: Date) {
+    private async fetchOrders(startDate: Date, endDate: Date, hasDateFilter: boolean) {
         return Order.findAll({
-            where: { ordered_at: { [Op.between]: [startDate, endDate] } },
+            where: hasDateFilter ? { ordered_at: { [Op.between]: [startDate, endDate] } } : undefined,
             attributes: ['id', 'receipt_number', 'total_price', 'ordered_at'],
             include: [
-                { model: OrderDetails, attributes: ['id', 'unit_price', 'qty'] },
+                {
+                    model: OrderDetails,
+                    attributes: ['id', 'unit_price', 'qty'],
+                    include: [
+                        { model: Product, attributes: ['id', 'name', 'image'] }
+                    ]
+                },
                 { model: User, attributes: ['id', 'avatar', 'name'] },
             ],
-            order: [['id', 'ASC']],
+            order: [['id', hasDateFilter ? 'ASC' : 'DESC']],
+            ...(hasDateFilter ? {} : { limit: 100 }),
         });
     }
 
@@ -68,12 +77,22 @@ export class SalePDFReportService {
             id: order.id,
             receipt_number: order.receipt_number,
             total_price: order.total_price,
-            ordered_at: order.ordered_at,
+            ordered_at: order.ordered_at ? new Date(order.ordered_at).toISOString().split('T')[0] : null,
             cashier: order.cashier ? {
                 id: order.cashier.id,
                 avatar: order.cashier.avatar,
                 name: order.cashier.name
             } : null,
+            details: (order.details || []).map(detail => ({
+                id: detail.id,
+                unit_price: detail.unit_price,
+                qty: detail.qty,
+                product: detail.product ? {
+                    id: detail.product.id,
+                    name: detail.product.name,
+                    image: detail.product.image
+                } : null
+            }))
         }));
     }
 
@@ -97,7 +116,7 @@ export class SalePDFReportService {
         const year = now.getFullYear();
         const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
         const day = String(now.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`; // Returns 'YYYY-MM-DD'
+        return `${year}-${month}-${day}`;// Returns 'YYYY-MM-DD'
     }
 
     // Helper to calculate start and end dates for Cambodia timezone (UTC+7)
@@ -125,7 +144,7 @@ export class SalePDFReportService {
             const result = await this.withTimeout(this.jsReportService.generateReport(template, reportData), timeout);
             if (result.error) throw new BadRequestException('Report generation failed.');
             return result;
-        } catch (error) {
+        } catch (error : any) {
             if (error instanceof RequestTimeoutException) {
                 throw new RequestTimeoutException('Request Timeout: Report generation took too long.');
             }

@@ -1,7 +1,10 @@
 // ================================================================>> Third Party Library
 import { Sequelize } from 'sequelize-typescript';
 import "colors";
-import * as readlineSync from 'readline-sync';
+import * as dotenv from 'dotenv';
+
+dotenv.config(); // ✅ Load env vars first
+
 // ================================================================>> Custom Library
 import sequelizeConfig from '@config/sequelize.config';
 
@@ -16,19 +19,25 @@ class MigrationInitializer {
     private async confirmMigration(): Promise<boolean> {
         const tableNames = await this.sequelize.getQueryInterface().showAllTables();
         if (tableNames.length > 0) {
-            const message = 'This will drop and recreate all tables. Are you sure you want to proceed?'.yellow;
-            return readlineSync.keyInYNStrict(message);
+            if (process.env.FORCE_MIGRATE !== 'true') {
+                console.log('Tables already exist. Set FORCE_MIGRATE=true to proceed.'.yellow);
+                return false;
+            }
+            console.log('Force migration enabled. Dropping and recreating tables...'.yellow);
         }
         return true;
     }
 
     private async dropAndRecreateTables() {
+        await this.sequelize.authenticate();
+        console.log(`✅ Connected to: ${process.env.DATABASE_URL}`.green);
         await this.sequelize.sync({ force: true });
     }
 
     private async handleMigrationError(error: Error) {
         console.log('\x1b[31m%s\x1b[0m', error.message);
-        process.exit(0);
+        await this.sequelize.close();
+        process.exit(1);
     }
 
     public async startMigration() {
@@ -41,8 +50,9 @@ class MigrationInitializer {
 
             await this.dropAndRecreateTables();
             console.log('\nMigration completed successfully.'.green);
+            await this.sequelize.close();
             process.exit(0);
-        } catch (error) {
+        } catch (error: any) {
             await this.handleMigrationError(error);
         }
     }

@@ -1,8 +1,9 @@
 import Product from "@app/models/product/product.model";
 import ProductType from "@app/models/product/type.model";
+import { Sequelize } from "sequelize-typescript";
 
 export class ProductSeeder {
-    public static async seed() {
+    public static async seed(sequelize?: Sequelize) {
         try {
             await ProductSeeder.seedProductTypes();
             await ProductSeeder.seedProducts();
@@ -13,7 +14,7 @@ export class ProductSeeder {
 
     private static async seedProductTypes() {
         try {
-            await ProductType.bulkCreate(productSeederData.types);
+            await ProductType.bulkCreate(productSeederData.types, { ignoreDuplicates: true });
             console.log('\x1b[32mProduct types inserted successfully.');
         } catch (error) {
             console.error('Error seeding product types:', error);
@@ -23,7 +24,7 @@ export class ProductSeeder {
 
     private static async seedProducts() {
         try {
-            await Product.bulkCreate(productSeederData.products);
+            await Product.bulkCreate(productSeederData.products, { ignoreDuplicates: true });
             console.log('\x1b[32mProducts inserted successfully.');
         } catch (error) {
             console.error('Error seeding products:', error);

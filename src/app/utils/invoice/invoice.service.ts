@@ -13,7 +13,7 @@ export class InvoiceService {
     constructor(private jsReportService: JsReportService) { }
 
     // Method to generate an invoice report
-    async generateReport(receiptNumber: number) {
+    async generateReport(receiptNumber: string) {
         // Retrieving orders related to the specified receipt number
         const orders = await Order.findAll({
             where: {
@@ -48,11 +48,21 @@ export class InvoiceService {
         });
 
         // Structuring the data for the report
-        const data = orders[0].toJSON();
+        const orderData = orders[0].toJSON();
 
         const dataWithServiceTitle = {
-            ...data,
+            ...orderData,
             title_of_service: 'CamCyber POS',
+            // 👇 Map your details to what the template expects
+            items: (orderData.details || []).map((detail: any) => ({
+                name: detail.product?.name || '',
+                price: detail.unit_price,
+                qty: detail.qty,
+            })),
+            // Fields the template uses
+            number: orderData.receipt_number,
+            nowLocalStr: new Date(orderData.ordered_at).toLocaleDateString(),
+            nowPlus20Days: new Date(new Date(orderData.ordered_at).setDate(new Date(orderData.ordered_at).getDate() + 20)).toLocaleDateString(),
         };
         // Get the report template
         const template = process.env.JS_TEMPLATE;
@@ -64,7 +74,7 @@ export class InvoiceService {
                 throw new BadRequestException(result.error);
             }
             return result;
-        } catch (error) {
+        } catch (error : any) {
             // Log the error or handle it in a more appropriate way
             throw new BadRequestException(error?.message || 'Failed to generate the report');
         }
@@ -129,7 +139,7 @@ export class InvoiceService {
 
             // Returning the generated report
             return result;
-        } catch (error) {
+        } catch (error : any) {
             // Log the error or handle it in a more appropriate way
             throw new BadRequestException(error?.message || 'Failed to generate the report');
         }

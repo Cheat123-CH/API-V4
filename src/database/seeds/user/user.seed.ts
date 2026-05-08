@@ -3,10 +3,11 @@ import { RoleEnum } from "@app/enums/role.enum";
 import Role from "src/app/models/user/role.model";
 import UserRoles from "src/app/models/user/user_roles.model";
 import User from "src/app/models/user/user.model";
+import { Sequelize } from "sequelize-typescript";
 
 export class UserSeeder {
 
-    public static seed = async () => {
+    public static seed = async (sequelize?: Sequelize) => {
         try {
             
             await UserSeeder.seedRoles();
@@ -20,21 +21,17 @@ export class UserSeeder {
 
     private static async seedRoles() {
         try {
-            
-            await Role.bulkCreate(data.roles);
+            await Role.bulkCreate(data.roles, { ignoreDuplicates: true });
             console.log('\x1b[32mRoles data inserted successfully.');
-
         } catch (error) {
-
             console.error('\x1b[31m\nError seeding roles:', error);
             throw error;
-
         }
     }
 
     private static async seedUsers() {
         try {
-            await User.bulkCreate(data.users);
+            await User.bulkCreate(data.users, { ignoreDuplicates: true });
             console.log('\x1b[32mUsers data inserted successfully.');
         } catch (error) {
             console.error('Error seeding users:', error);
@@ -44,7 +41,7 @@ export class UserSeeder {
 
     private static async seedUserRoles() {
         try {
-            await UserRoles.bulkCreate(data.user_roles);
+            await UserRoles.bulkCreate(data.user_roles, { ignoreDuplicates: true });
             console.log('\x1b[32mUser Roles data inserted successfully.');
         } catch (error) {
             console.error('Error seeding user roles:', error);

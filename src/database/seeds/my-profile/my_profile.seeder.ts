@@ -1,8 +1,9 @@
 import MyProfile from "@app/models/my-profile/my_profile.model";
+import { Sequelize } from "sequelize-typescript";
 
 export class MyProfileSeeder {
 
-    public static async seed() {
+    public static async seed(sequelize?: Sequelize) {
         try {
             await MyProfileSeeder.seedMyProfile();
         } catch (error) {

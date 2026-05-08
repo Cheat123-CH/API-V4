@@ -1,9 +1,10 @@
 import OrderDetails from "@app/models/order/detail.model";
 import Order from "@app/models/order/order.model";
 import Product from "@app/models/product/product.model";
+import { Sequelize } from "sequelize-typescript";
 
 export class OrderSeeder {
-    public static async seed() {
+    public static async seed(sequelize?: Sequelize) {
         try {
             await OrderSeeder.clearExistingOrders();
             await OrderSeeder.seedOrders();
